@@ -3,7 +3,7 @@ package ecs.systems;
 import ecs.components.xp.XPComponent;
 import starter.Game;
 
-public class XPSystem extends System {
+public class XPSystem extends ECS_System {
 
     @Override
     public void update() {

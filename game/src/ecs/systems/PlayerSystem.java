@@ -10,7 +10,7 @@ import ecs.tools.interaction.InteractionTool;
 import starter.Game;
 
 /** Used to control the player */
-public class PlayerSystem extends System {
+public class PlayerSystem extends ECS_System {
 
     private record KSData(Entity e, PlayableComponent pc, VelocityComponent vc) {}
 
@@ -40,6 +40,8 @@ public class PlayerSystem extends System {
             ksd.pc.getSkillSlot1().ifPresent(skill -> skill.execute(ksd.e));
         else if (Gdx.input.isKeyPressed(KeyboardConfig.SECOND_SKILL.get()))
             ksd.pc.getSkillSlot2().ifPresent(skill -> skill.execute(ksd.e));
+        else if (Gdx.input.isKeyPressed(KeyboardConfig.THIRD_SKILL.get()))
+            ksd.pc.getSkillSlot3().ifPresent(skill -> skill.execute(ksd.e));
     }
 
     private KSData buildDataObject(PlayableComponent pc) {
