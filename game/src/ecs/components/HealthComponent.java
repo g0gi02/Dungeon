@@ -13,7 +13,6 @@ import logging.CustomLogLevel;
 import semanticAnalysis.types.DSLContextMember;
 import semanticAnalysis.types.DSLType;
 import semanticAnalysis.types.DSLTypeMember;
-import starter.Game;
 
 /** The HealthComponent makes an entity vulnerable and killable */
 @DSLType(name = "health_component")
@@ -74,16 +73,6 @@ public class HealthComponent extends Component {
      * @param damage Damage that should be inflicted
      */
     public void receiveHit(Damage damage) {
-        // TODO: Remove this
-        Logger logger = Logger.getLogger(this.getClass().getName());
-        logger.info(
-                "Entity '"
-                        + entity.getClass().getSimpleName()
-                        + "' received damage: "
-                        + damage.damageAmount()
-                        + " "
-                        + damage.damageType().toString());
-        // TODO: Remove this
         damageToGet.add(damage);
         this.lastCause = damage.cause() != null ? damage.cause() : this.lastCause;
     }
@@ -147,7 +136,7 @@ public class HealthComponent extends Component {
      *
      * @param dieAnimation new dieAnimation
      */
-    public void setDieAnimation(Animation dieAnimation) {
+    public void setDeathAnimation(Animation dieAnimation) {
         this.dieAnimation = dieAnimation;
     }
 
@@ -193,7 +182,7 @@ public class HealthComponent extends Component {
     /**
      * @return Animation to be played when dying
      */
-    public Animation getDieAnimation() {
+    public Animation getDeathAnimation() {
         return dieAnimation;
     }
 
@@ -202,5 +191,9 @@ public class HealthComponent extends Component {
      */
     public Optional<Entity> getLastDamageCause() {
         return Optional.ofNullable(this.lastCause);
+    }
+
+    public boolean isDead() {
+        return currentHealthpoints <= 0;
     }
 }
