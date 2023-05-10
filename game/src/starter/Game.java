@@ -23,15 +23,9 @@ import ecs.entities.Imp;
 import ecs.entities.Slime;
 import ecs.components.VelocityComponent;
 import ecs.systems.*;
-import ecs.components.HealthComponent;
-import ecs.entities.Chest;
-import ecs.entities.Chort;
-import ecs.entities.DragonP1;
+import ecs.systems.System;
 import graphic.DungeonCamera;
-import ecs.entities.SlowTrap;
-import ecs.entities.Mimic_Chest_Trap;
 import graphic.Painter;
-import graphic.hud.GameOverMenu;
 import graphic.hud.PauseMenu;
 import graphic.textures.TextureHandler;
 import java.io.IOException;
@@ -279,7 +273,6 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                                 .orElseThrow(
                                         () -> new MissingComponentException("PositionComponent"));
         pc.setPosition(currentLevel.getStartTile().getCoordinate().toPoint());
-    }
 
     // Reset hero's velocity
         Game.getHero().stream()
