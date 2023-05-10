@@ -13,6 +13,8 @@ import tools.Point;
 
 public class Chest extends Entity {
 
+    //TODO: Variablennamen anpassen
+
     public static final float defaultInteractionRadius = 1f;
     public static final List<String> DEFAULT_CLOSED_ANIMATION_FRAMES =
             List.of("objects/treasurechest/chest_full_open_anim_f0.png");

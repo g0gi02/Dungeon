@@ -16,9 +16,22 @@ import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.entities.Entity;
 import ecs.entities.Hero;
+import ecs.entities.Imp;
+import ecs.entities.Mimic_Chest_Trap;
+import ecs.entities.SlowTrap;
+import ecs.entities.Imp;
+import ecs.entities.Slime;
+import ecs.components.VelocityComponent;
 import ecs.systems.*;
+import ecs.components.HealthComponent;
+import ecs.entities.Chest;
+import ecs.entities.Chort;
+import ecs.entities.DragonP1;
 import graphic.DungeonCamera;
+import ecs.entities.SlowTrap;
+import ecs.entities.Mimic_Chest_Trap;
 import graphic.Painter;
+import graphic.hud.GameOverMenu;
 import graphic.hud.PauseMenu;
 import graphic.textures.TextureHandler;
 import java.io.IOException;
@@ -74,7 +87,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public static SystemController systems;
 
     public static ILevel currentLevel;
+    public static int levelCounter = 0;
+
+    public static boolean dragonExists = false;
+
     private static PauseMenu<Actor> pauseMenu;
+    public static GameOverMenu<Actor> gameOverMenu;
     private static Entity hero;
     private Logger gameLogger;
 
@@ -136,7 +154,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         systems = new SystemController();
         controller.add(systems);
         pauseMenu = new PauseMenu<>();
+        gameOverMenu = new GameOverMenu<>();
         controller.add(pauseMenu);
+        controller.add(gameOverMenu);
         hero = new Hero();
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
         levelAPI.loadLevel(LEVELSIZE);
@@ -149,13 +169,63 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         manageEntitiesSets();
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
+        if (gameOverMenu.isMenuOpen) manageGameOverMenuInputs();
+
+        // TODO: remove this
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) levelAPI.loadLevel(LEVELSIZE);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) Mimic_Chest_Trap.createNewMimicChest();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) Chest.createNewChest();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+           Logger logger = Logger.getLogger("Health");
+           Game.getHero().stream()
+           .flatMap(e -> e.getComponent(HealthComponent.class).stream())
+           .map(HealthComponent.class::cast)
+           .forEach(healthComponent -> {
+               logger.info("Hero-Health:" + healthComponent.getCurrentHealthpoints());
+           });
+        }
+    }
+
+    private void manageGameOverMenuInputs() {
+        //check Inputs while gameOverMenu is active
+        if (Gdx.input.isKeyPressed(Input.Keys.K)) {
+            System.out.println("game has endet");
+            Gdx.app.exit();
+            //remove all Entities and place a new hero
+        } else if (Gdx.input.isKeyPressed(Input.Keys.L)) {
+            Hero hero = new Hero();
+            Set<Entity> allEntities = Game.getEntities();
+            Iterator<Entity> entityIterator = allEntities.iterator();
+            while (entityIterator.hasNext()) {
+                Game.removeEntity(entityIterator.next());
+            }
+            Game.setHero(hero);
+            System.out.println("restart");
+            gameOverMenu.hideEndMenu();
+        }
     }
 
     @Override
     public void onLevelLoad() {
         currentLevel = levelAPI.getCurrentLevel();
+
+
+        if(++levelCounter % 10 == 0) {
+            DragonP1.createNewDragonP1();
+            dragonExists = true;
+        } else {
+            Mimic_Chest_Trap.createNewMimicChest();
+            SlowTrap.createSlowTrap();
+            Imp.createNewImp();
+            Slime.createNewSlime();
+            Chort.createNewChort();
+        }
+
         entities.clear();
         getHero().ifPresent(this::placeOnLevelStart);
+        //add 50 xp to the hero upon entering a level
+        Game.getHero().map(h -> (Hero) h).ifPresent(h -> h.addXP(50));
     }
 
     private void manageEntitiesSets() {
@@ -188,7 +258,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     }
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
-        if (isOnEndTile(hero)) levelAPI.loadLevel(LEVELSIZE);
+        if (isOnEndTile(hero) && !dragonExists) levelAPI.loadLevel(LEVELSIZE);
     }
 
     private boolean isOnEndTile(Entity entity) {
@@ -210,6 +280,15 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                                         () -> new MissingComponentException("PositionComponent"));
         pc.setPosition(currentLevel.getStartTile().getCoordinate().toPoint());
     }
+
+    // Reset hero's velocity
+        Game.getHero().stream()
+        .flatMap(e -> e.getComponent(VelocityComponent.class).stream())
+        .map(VelocityComponent.class::cast)
+        .forEach(VelocityComponent -> {
+        VelocityComponent.setXVelocity(0.3f);
+        VelocityComponent.setYVelocity(0.3f);
+    });
 
     public static TextureHandler getHandler() {
         return handler;
@@ -310,5 +389,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         new XPSystem();
         new SkillSystem();
         new ProjectileSystem();
+        new ManaSystem();
+    }
+
+    public static void setDragonExistsFalse() {
+        dragonExists = false;
     }
 }
