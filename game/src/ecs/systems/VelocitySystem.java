@@ -1,19 +1,17 @@
 package ecs.systems;
 
 import ecs.components.AnimationComponent;
-import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.skill.ProjectileComponent;
 import ecs.entities.Entity;
 import graphic.Animation;
-import java.util.concurrent.atomic.AtomicBoolean;
 import starter.Game;
 import tools.Point;
 
 /** MovementSystem is a system that updates the position of entities */
-public class VelocitySystem extends System {
+public class VelocitySystem extends ECS_System {
 
     private record VSData(Entity e, VelocityComponent vc, PositionComponent pc) {}
 
@@ -57,19 +55,6 @@ public class VelocitySystem extends System {
     }
 
     private void movementAnimation(Entity entity) {
-
-        AtomicBoolean isDead = new AtomicBoolean(false);
-        entity.getComponent(HealthComponent.class)
-                .ifPresent(
-                        component -> {
-                            HealthComponent healthComponent = (HealthComponent) component;
-                            isDead.set(healthComponent.isDead());
-                        });
-
-        if (isDead.get()) {
-            return;
-        }
-
         AnimationComponent ac =
                 (AnimationComponent)
                         entity.getComponent(AnimationComponent.class)
