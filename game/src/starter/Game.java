@@ -12,20 +12,17 @@ import configuration.Configuration;
 import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
+import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
-import ecs.entities.Entity;
-import ecs.entities.Hero;
+import ecs.entities.*;
 import ecs.entities.Imp;
-import ecs.entities.Mimic_Chest_Trap;
-import ecs.entities.SlowTrap;
-import ecs.entities.Imp;
-import ecs.entities.Slime;
 import ecs.components.VelocityComponent;
 import ecs.systems.*;
-import ecs.systems.System;
+
 import graphic.DungeonCamera;
 import graphic.Painter;
+import graphic.hud.GameOverMenu;
 import graphic.hud.PauseMenu;
 import graphic.textures.TextureHandler;
 import java.io.IOException;
@@ -133,11 +130,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
          * - https://github.com/Programmiermethoden/Dungeon/pull/560<br>
          * - https://github.com/Programmiermethoden/Dungeon/issues/587<br>
          */
-        try {
-            handler = TextureHandler.getInstance();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        handler = TextureHandler.getInstance();
+
         controller = new ArrayList<>();
         setupCameras();
         painter = new Painter(batch, camera);
@@ -268,20 +263,21 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private void placeOnLevelStart(Entity hero) {
         entities.add(hero);
         PositionComponent pc =
-                (PositionComponent)
-                        hero.getComponent(PositionComponent.class)
-                                .orElseThrow(
-                                        () -> new MissingComponentException("PositionComponent"));
+            (PositionComponent)
+                hero.getComponent(PositionComponent.class)
+                    .orElseThrow(
+                        () -> new MissingComponentException("PositionComponent"));
         pc.setPosition(currentLevel.getStartTile().getCoordinate().toPoint());
 
-    // Reset hero's velocity
+        // Reset hero's velocity
         Game.getHero().stream()
-        .flatMap(e -> e.getComponent(VelocityComponent.class).stream())
-        .map(VelocityComponent.class::cast)
-        .forEach(VelocityComponent -> {
-        VelocityComponent.setXVelocity(0.3f);
-        VelocityComponent.setYVelocity(0.3f);
-    });
+            .flatMap(e -> e.getComponent(VelocityComponent.class).stream())
+            .map(VelocityComponent.class::cast)
+            .forEach(VelocityComponent -> {
+                VelocityComponent.setXVelocity(0.3f);
+                VelocityComponent.setYVelocity(0.3f);
+            });
+    }
 
     public static TextureHandler getHandler() {
         return handler;
