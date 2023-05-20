@@ -16,6 +16,7 @@ public class PlayableComponent extends Component {
     private boolean playable;
     private final Logger playableCompLogger = Logger.getLogger(this.getClass().getName());
 
+    private Skill meleeSkill;
     private Skill skillSlot1;
     private Skill skillSlot2;
     private Skill skillSlot3;
@@ -59,6 +60,13 @@ public class PlayableComponent extends Component {
     }
 
     /**
+     * @param meleeSkill skill that will be on the melee skillslot
+     */
+    public void setMeleeSkill(Skill meleeSkill) {
+        this.meleeSkill = meleeSkill;
+    }
+
+    /**
      * @param skillSlot1 skill that will be on the first skillslot
      */
     public void setSkillSlot1(Skill skillSlot1) {
@@ -77,6 +85,13 @@ public class PlayableComponent extends Component {
      */
     public void setSkillSlot3(Skill skillSlot3) {
         this.skillSlot3 = skillSlot3;
+    }
+
+    /**
+     * @return skill on melee skill slot
+     */
+    public Optional<Skill> getMeleeSkill() {
+        return Optional.ofNullable(meleeSkill);
     }
 
     /**

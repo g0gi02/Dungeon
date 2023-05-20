@@ -37,6 +37,17 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
         this.knockback = 0f;
     }
 
+    /**
+     * creates a damage-dealing projectile
+     *
+     * @param pathToTexturesOfProjectile where to get the textures from
+     * @param projectileSpeed speed of the projectile
+     * @param projectileDamage damage the projectile deals
+     * @param projectileHitboxSize size of the projectile
+     * @param selectionFunction how the target point is selected
+     * @param projectileRange range of the projectile
+     * @param knockback factor to the projectiles speed, by which the hit entity will be moved
+     */
     public DamageProjectileSkill(
         String pathToTexturesOfProjectile,
         float projectileSpeed,
@@ -85,14 +96,18 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
     private ICollide setupCollision (Entity entity, Entity projectile, VelocityComponent vc) {
         return (a, b, from) -> {
             if (b != entity) {
-                b.getComponent(VelocityComponent.class)
-                    .ifPresent(
-                        v -> {
-                            ((VelocityComponent) v).setCurrentXVelocity(
-                                vc.getCurrentXVelocity()*knockback);
-                            ((VelocityComponent) v).setCurrentYVelocity(
-                                vc.getCurrentYVelocity()*knockback);
-                        });
+                // if a value for knockback was set, overrides the velocity of the hit entity
+                // with that of the skill, multiplied by the given knockback
+                if (knockback != 0) {
+                    b.getComponent(VelocityComponent.class)
+                        .ifPresent(
+                            v -> {
+                                ((VelocityComponent) v).setCurrentXVelocity(
+                                    vc.getXVelocity()*knockback);
+                                ((VelocityComponent) v).setCurrentYVelocity(
+                                    vc.getYVelocity()*knockback);
+                            });
+                }
                 b.getComponent(HealthComponent.class)
                     .ifPresent(
                         hc -> {

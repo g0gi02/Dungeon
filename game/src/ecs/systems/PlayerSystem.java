@@ -1,6 +1,7 @@
 package ecs.systems;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import configuration.KeyboardConfig;
 import ecs.components.MissingComponentException;
 import ecs.components.PlayableComponent;
@@ -36,6 +37,8 @@ public class PlayerSystem extends ECS_System {
             InteractionTool.interactWithClosestInteractable(ksd.e);
 
         // check skills
+        else if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+            ksd.pc.getMeleeSkill().ifPresent(skill -> skill.execute(ksd.e));
         else if (Gdx.input.isKeyPressed(KeyboardConfig.FIRST_SKILL.get()))
             ksd.pc.getSkillSlot1().ifPresent(skill -> skill.execute(ksd.e));
         else if (Gdx.input.isKeyPressed(KeyboardConfig.SECOND_SKILL.get()))

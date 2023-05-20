@@ -18,9 +18,11 @@ import java.util.List;
  */
 public class Hero extends Entity {
 
-    private final int fireballCoolDown = 5;
+    private final float meleeCollDown = 0.2f;
+    private final float fireballCoolDown = 5f;
     private final float icestreamSkillCoolDown = 5/30f;
     private final float speedBoostSkillCoolDown = 6f;
+    private final float meleeManaCost = 0f;
     private final float fireballManaCost = 6f;
     private final float icestreamManaCost = 1f;
     private final float speedBoostSkillManaCost = 10f;
@@ -38,6 +40,7 @@ public class Hero extends Entity {
     private final String pathToIdleRight = "knight/idleRight";
     private final String pathToRunLeft = "knight/runLeft";
     private final String pathToRunRight = "knight/runRight";
+    private Skill meleeSkill;
     private Skill firstSkill;
     private Skill secondSkill;
     private Skill thirdSkill;
@@ -52,6 +55,7 @@ public class Hero extends Entity {
         setupVelocityComponent();
         setupAnimationComponent();
         setupHitboxComponent();
+        setupMeleeSkill();
         setupFireballSkill();
         setupSpeedBoostSkill();
         setupIceSkill();
@@ -61,6 +65,7 @@ public class Hero extends Entity {
         new XPComponent(this);
         setupManaComponent();
         setupHealthComponent();
+        unlockMeleeSkill();
     }
 
     private void setupHealthComponent() {
@@ -86,10 +91,18 @@ public class Hero extends Entity {
         new AnimationComponent(this, idleLeft, idleRight);
     }
 
+    private void setupMeleeSkill () {
+        meleeSkill =
+            new Skill(
+                new SwordSlash(SkillTools::getCursorPositionAsPoint, 1f),
+                meleeCollDown, meleeManaCost);
+    }
+
     private void setupFireballSkill() {
         firstSkill =
             new Skill(
-                new FireballSkill(SkillTools::getCursorPositionAsPoint), fireballCoolDown, fireballManaCost);
+                new FireballSkill(SkillTools::getCursorPositionAsPoint),
+                fireballCoolDown, fireballManaCost);
     }
 
     private void setupSpeedBoostSkill() {
@@ -101,7 +114,8 @@ public class Hero extends Entity {
     private void setupIceSkill() {
         thirdSkill =
             new Skill(
-                new IcestreamSkill(SkillTools::getCursorPositionAsPoint), icestreamSkillCoolDown, icestreamManaCost);
+                new IcestreamSkill(SkillTools::getCursorPositionAsPoint),
+                icestreamSkillCoolDown, icestreamManaCost);
     }
 
     private void setupHitboxComponent() {
@@ -114,6 +128,11 @@ public class Hero extends Entity {
     private void setupManaComponent() {
         this.mc.setMaxMana(this.maxMana);
         this.mc.setManaRegenRate(this.manaRegenRate);
+    }
+
+    private void unlockMeleeSkill() {
+        this.pc.setMeleeSkill(meleeSkill);
+        this.sc.addSkill(meleeSkill);
     }
 
     private void unlockFirstSkill() {
