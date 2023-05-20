@@ -76,8 +76,8 @@ public class DragonP2 extends BossMonster{
 
     // HealthComponents onDeath function: grant the hero 100 xp, call method to unlock the exit
     private void setupHealthComponent() {
-        Animation monsterHit = AnimationBuilder.buildAnimation("animation/");
-        Animation monsterDeath = AnimationBuilder.buildAnimation("animation/");
+        Animation monsterHit = AnimationBuilder.buildAnimation("character/monster/dragon2/idleLeft/");
+        Animation monsterDeath = AnimationBuilder.buildAnimation("character/monster/dragon2/idleLeft/");
         new HealthComponent(this, MAX_HEALTH,
             a -> {Game.getHero().ifPresent(h -> ((Hero) h).addXP(100));
                     Game.setDragonExistsFalse();},
