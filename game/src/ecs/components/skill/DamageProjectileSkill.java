@@ -15,6 +15,7 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
     private float projectileSpeed;
 
     private float projectileRange;
+    private float knockback;
     private Damage projectileDamage;
     private Point projectileHitboxSize;
 
@@ -33,6 +34,24 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
         this.projectileRange = projectileRange;
         this.projectileHitboxSize = projectileHitboxSize;
         this.selectionFunction = selectionFunction;
+        this.knockback = 0f;
+    }
+
+    public DamageProjectileSkill(
+        String pathToTexturesOfProjectile,
+        float projectileSpeed,
+        Damage projectileDamage,
+        Point projectileHitboxSize,
+        ITargetSelection selectionFunction,
+        float projectileRange,
+        float knockback) {
+        this.pathToTexturesOfProjectile = pathToTexturesOfProjectile;
+        this.projectileDamage = projectileDamage;
+        this.projectileSpeed = projectileSpeed;
+        this.projectileRange = projectileRange;
+        this.projectileHitboxSize = projectileHitboxSize;
+        this.selectionFunction = selectionFunction;
+        this.knockback = knockback;
     }
 
     @Override
@@ -57,19 +76,30 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
         VelocityComponent vc =
                 new VelocityComponent(projectile, velocity.x, velocity.y, animation, animation);
         new ProjectileComponent(projectile, epc.getPosition(), targetPoint);
-        ICollide collide =
-                (a, b, from) -> {
-                    if (b != entity) {
-                        b.getComponent(HealthComponent.class)
-                                .ifPresent(
-                                        hc -> {
-                                            ((HealthComponent) hc).receiveHit(projectileDamage);
-                                            Game.removeEntity(projectile);
-                                        });
-                    }
-                };
+        ICollide collide = setupCollision(entity, projectile, vc);
 
         new HitboxComponent(
                 projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
+    }
+
+    private ICollide setupCollision (Entity entity, Entity projectile, VelocityComponent vc) {
+        return (a, b, from) -> {
+            if (b != entity) {
+                b.getComponent(VelocityComponent.class)
+                    .ifPresent(
+                        v -> {
+                            ((VelocityComponent) v).setCurrentXVelocity(
+                                vc.getCurrentXVelocity()*knockback);
+                            ((VelocityComponent) v).setCurrentYVelocity(
+                                vc.getCurrentYVelocity()*knockback);
+                        });
+                b.getComponent(HealthComponent.class)
+                    .ifPresent(
+                        hc -> {
+                            ((HealthComponent) hc).receiveHit(projectileDamage);
+                            Game.removeEntity(projectile);
+                        });
+            }
+        };
     }
 }
