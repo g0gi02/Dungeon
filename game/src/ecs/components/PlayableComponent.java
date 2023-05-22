@@ -19,6 +19,8 @@ public class PlayableComponent extends Component {
     private Skill skillSlot1;
     private Skill skillSlot2;
     private Skill skillSlot3;
+    private Skill skillSlot4;
+    private Skill skillSlot5;
 
     /**
      * @param entity associated entity
@@ -80,6 +82,22 @@ public class PlayableComponent extends Component {
     }
 
     /**
+     * In default this will be the boomerang skill
+     * @param skillSlot4 skill that will be on the fourth skillslot
+     */
+    public void setSkillSlot4(Skill skillSlot4) {
+        this.skillSlot4 = skillSlot4;
+    }
+
+    /**
+     * In default this will be the bouncyBall skill
+     * @param skillSlot5 skill that will be on the fifth skillslot
+     */
+    public void setSkillSlot5(Skill skillSlot5) {
+        this.skillSlot5 = skillSlot5;
+    }
+
+    /**
      * @return skill on first skill slot
      */
     public Optional<Skill> getSkillSlot1() {
@@ -98,5 +116,19 @@ public class PlayableComponent extends Component {
      */
     public Optional<Skill> getSkillSlot3() {
         return Optional.ofNullable(skillSlot3);
+    }
+
+    /**
+     * @return skill on fourth skill slot
+     */
+    public Optional<Skill> getSkillSlot4() {
+        return Optional.ofNullable(skillSlot4);
+    }
+
+    /**
+     * @return skill on fifth skill slot
+     */
+    public Optional<Skill> getSkillSlot5() {
+        return Optional.ofNullable(skillSlot5);
     }
 }

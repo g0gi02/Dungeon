@@ -4,9 +4,13 @@ import ecs.components.AnimationComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.components.VelocityComponent;
+import ecs.components.skill.BouncingComponent;
+import ecs.components.skill.BouncingProjectileSkill;
 import ecs.components.skill.ProjectileComponent;
 import ecs.entities.Entity;
 import graphic.Animation;
+import level.elements.tile.Tile;
+import level.tools.LevelElement;
 import starter.Game;
 import tools.Point;
 
@@ -32,15 +36,35 @@ public class VelocitySystem extends ECS_System {
             movementAnimation(vsd.e);
         }
 
-        // remove projectiles that hit the wall or other non-accessible
+        // remove or bounce projectiles that hit the wall or other non-accessible
         // tiles
-        else if (vsd.e.getComponent(ProjectileComponent.class).isPresent())
+        else if (vsd.e.getComponent(ProjectileComponent.class).isPresent()) {    
+
+            // if the projectile is a bouncing projectile and is colliding with a wall, bounce it
+            if(vsd.e.getComponent(BouncingComponent.class).isPresent()
+                && Game.currentLevel.getTileAt(newPosition.toCoordinate()).getLevelElement() != LevelElement.HOLE) {
+                executeBounce(vsd, newPosition);
+            }
+                
+                
             Game.removeEntity(vsd.e);
+        }
+        
 
         vsd.vc.setCurrentYVelocity(0);
         vsd.vc.setCurrentXVelocity(0);
 
         return vsd;
+    }
+
+    private void executeBounce(VSData vsd, Point newPosition) {
+        Tile newTile = Game.currentLevel.getTileAt(newPosition.toCoordinate());
+        Tile oldTile = Game.currentLevel.getTileAt(vsd.pc.getPosition().toCoordinate());
+
+        System.out.println();
+        System.out.println(newTile.directionTo(oldTile).length);
+        ((BouncingComponent) vsd.e.getComponent(BouncingComponent.class).get()).bounce(newTile.directionTo(oldTile));
+        System.out.println("Bouncing");   
     }
 
     private VSData buildDataObject(VelocityComponent vc) {

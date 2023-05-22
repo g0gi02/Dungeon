@@ -1,5 +1,7 @@
 package ecs.components.skill;
 
+import javax.swing.text.Position;
+
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
 import ecs.components.collision.ICollide;
@@ -72,4 +74,5 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
         new HitboxComponent(
                 projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
     }
+    
 }

@@ -41,6 +41,8 @@ public class Hero extends Entity {
     private Skill firstSkill;
     private Skill secondSkill;
     private Skill thirdSkill;
+    private Skill boomerangSkill;
+    private Skill bouncingBallSkill;
     private SkillComponent sc;
     private PlayableComponent pc;
     private ManaComponent mc;
@@ -55,12 +57,17 @@ public class Hero extends Entity {
         setupFireballSkill();
         setupSpeedBoostSkill();
         setupIceSkill();
+        setupBouncingBallSkill();
+        setupBoomerangSkill();
         this.pc = new PlayableComponent(this);
         this.sc = new SkillComponent(this);
         this.mc = new ManaComponent(this);
         new XPComponent(this);
         setupManaComponent();
         setupHealthComponent();
+
+        unlockFourthSkill();
+        unlockFifthSkill();
     }
 
     private void setupHealthComponent() {
@@ -104,6 +111,18 @@ public class Hero extends Entity {
                 new IcestreamSkill(SkillTools::getCursorPositionAsPoint), icestreamSkillCoolDown, icestreamManaCost);
     }
 
+    private void setupBoomerangSkill() {
+        boomerangSkill =
+            new Skill(
+                new BoomerangSkill(SkillTools::getCursorPositionAsPoint), 6f, 0f);
+    }
+
+    private void setupBouncingBallSkill() {
+        bouncingBallSkill =
+            new Skill(
+                new BouncingBallSkill(SkillTools::getCursorPositionAsPoint), 6f, 0f);
+    }
+
     private void setupHitboxComponent() {
         new HitboxComponent(
                 this,
@@ -116,19 +135,34 @@ public class Hero extends Entity {
         this.mc.setManaRegenRate(this.manaRegenRate);
     }
 
+    // Fireball skill
     private void unlockFirstSkill() {
         this.pc.setSkillSlot1(firstSkill);
         this.sc.addSkill(firstSkill);
     }
 
+    // Speed boost skill
     private void unlockSecondSkill() {
         this.pc.setSkillSlot2(secondSkill);
         this.sc.addSkill(secondSkill);
     }
 
+    // Ice stream skill
     private void unlockThirdSkill() {
         this.pc.setSkillSlot3(thirdSkill);
         this.sc.addSkill(thirdSkill);
+    }
+
+    // Boomrang skill is unlocked by default
+    private void unlockFourthSkill() {
+        this.pc.setSkillSlot4(boomerangSkill);
+        this.sc.addSkill(boomerangSkill);
+    }
+
+    // Bouncing ball skill is unlocked by default
+    private void unlockFifthSkill() {
+        this.pc.setSkillSlot5(bouncingBallSkill);
+        this.sc.addSkill(bouncingBallSkill);
     }
 
     /**
