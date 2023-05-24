@@ -29,7 +29,7 @@ public class Hero extends Entity {
     private final float xSpeed = 0.3f;
     private final float ySpeed = 0.3f;
     private int previousLevel = 0;
-    private final int MAX_HEALTH = 999;
+    private final int MAX_HEALTH = 100;
     private final String GET_PATH_TO_KNIGHT_DEATH = "animation";
 
     private static final List<String> missingTexture = List.of("animation/missingTexture.png");
