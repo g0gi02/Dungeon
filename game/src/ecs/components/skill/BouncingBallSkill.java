@@ -12,7 +12,7 @@ public class BouncingBallSkill extends BouncingProjectileSkill {
                 new Damage(1, DamageType.PHYSICAL, null),
                 new Point(1, 1),
                 targetSelection,
-                10f,
+                15f,
                 5);
     }
 }

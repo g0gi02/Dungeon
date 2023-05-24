@@ -78,7 +78,6 @@ public abstract class BouncingProjectileSkill extends DamageProjectileSkill{
                                 .ifPresent(
                                         hc -> {
                                             ((HealthComponent) hc).receiveHit(projectileDamage);
-                                            // execute(entity);
                                             SkillTools.causeKnockBack(a, b);
                                             Game.removeEntity(projectile);
                                         });
