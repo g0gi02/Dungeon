@@ -12,7 +12,7 @@ import tools.Point;
 @DSLType(name = "position_component")
 public class PositionComponent extends Component {
 
-    private final Logger positionCompLogger = Logger.getLogger(this.getClass().getName());
+    private transient Logger positionCompLogger;
     private /*@DSLTypeMember(name="position")*/ Point position;
 
     /**
@@ -28,8 +28,8 @@ public class PositionComponent extends Component {
      */
     public PositionComponent(@DSLContextMember(name = "entity") Entity entity, Point point) {
         super(entity);
-
         this.position = point;
+        setupLogger();
     }
 
     /**
@@ -46,6 +46,7 @@ public class PositionComponent extends Component {
      */
     public PositionComponent(@DSLContextMember(name = "entity") Entity entity, float x, float y) {
         this(entity, new Point(x, y));
+        setupLogger();
     }
 
     /**
@@ -62,7 +63,7 @@ public class PositionComponent extends Component {
      */
     public PositionComponent(@DSLContextMember(name = "entity") Entity entity) {
         super(entity);
-
+        setupLogger();
         if (Game.currentLevel != null) {
             position = Game.currentLevel.getRandomFloorTile().getCoordinateAsPoint();
         } else {
@@ -90,5 +91,12 @@ public class PositionComponent extends Component {
      */
     public void setPosition(Point position) {
         this.position = position;
+    }
+
+    /**
+     * Set up the Logger for the PositionComponent
+     */
+    public void setupLogger() {
+        positionCompLogger = Logger.getLogger(this.getClass().getName());
     }
 }

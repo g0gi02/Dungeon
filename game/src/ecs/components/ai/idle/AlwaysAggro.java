@@ -9,7 +9,7 @@ import tools.Constants;
 
 public class AlwaysAggro implements IIdleAI {
     private final float radius;
-    private GraphPath<Tile> path;
+    private transient GraphPath<Tile> path;
     private final int breakTime;
     private int currentBreak = 0;
     private final Skill skill;

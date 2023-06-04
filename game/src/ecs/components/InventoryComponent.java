@@ -12,7 +12,7 @@ public class InventoryComponent extends Component {
 
     private List<ItemData> inventory;
     private int maxSize;
-    private final Logger inventoryLogger = Logger.getLogger(this.getClass().getName());
+    private transient Logger inventoryLogger;
 
     /**
      * creates a new InventoryComponent
@@ -24,6 +24,7 @@ public class InventoryComponent extends Component {
         super(entity);
         inventory = new ArrayList<>(maxSize);
         this.maxSize = maxSize;
+        setupLogger();
     }
 
     /**
@@ -88,5 +89,12 @@ public class InventoryComponent extends Component {
      */
     public List<ItemData> getItems() {
         return new ArrayList<>(inventory);
+    }
+
+    /**
+     * Set up the Logger for the InventoryComponent
+     */
+    public void setupLogger() {
+        inventoryLogger = Logger.getLogger(this.getClass().getName());
     }
 }

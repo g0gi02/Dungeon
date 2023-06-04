@@ -26,7 +26,7 @@ import graphic.hud.GameOverMenu;
 import graphic.hud.PauseMenu;
 import graphic.textures.TextureHandler;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -183,12 +183,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
         if (gameOverMenu.isMenuOpen) manageGameOverMenuInputs();
-
-        // TODO: remove this
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) saveGame("game/saves/save.txt");
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) loadGame("game/saves/save.txt");
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) levelAPI.loadLevel(LEVELSIZE);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) Mimic_Chest_Trap.createNewMimicChest();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) Chest.createNewChest();
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             Logger logger = Logger.getLogger("Health");
             Game.getHero().stream()
@@ -413,5 +410,52 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     public static void setDragonExistsFalse() {
         dragonExists = false;
+    }
+
+    /**
+     * save the Level and all Entities with their Components in a file
+     *
+     * @param saveFile the file being written to
+     */
+    public void saveGame(String saveFile) {
+        try (FileOutputStream fos = new FileOutputStream(saveFile);
+            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(dragonExists);
+            oos.writeObject(levelCounter);
+            oos.writeObject(currentLevel);
+            System.out.println("before hero");
+            oos.writeObject(hero);
+            System.out.println("after hero");
+            oos.writeObject(entities);
+            oos.close();
+            gameLogger.info("Game saved successfully.");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            gameLogger.severe("Game could not be saved.");
+        }
+    }
+
+    /**
+     * read the Level and Entities from a file
+     *
+     * @param saveFile the file being read from
+     */
+    public void loadGame(String saveFile) {
+        try (FileInputStream fis = new FileInputStream(saveFile);
+            ObjectInputStream ois = new ObjectInputStream(fis)) {
+            dragonExists = (boolean) ois.readObject();
+            levelCounter = (int) ois.readObject();
+            currentLevel = (ILevel) ois.readObject();
+            hero = (Hero) ois.readObject();
+            Set<Entity> newEntities = (HashSet) ois.readObject();
+            entities.clear();
+            entities.addAll(newEntities);
+            for (Entity entity : entities) {
+                entity.setupLogger();
+            }
+            ois.close();
+        } catch (IOException | ClassNotFoundException ex) {
+            gameLogger.severe("File: "+saveFile+" could not be loaded.");
+        }
     }
 }

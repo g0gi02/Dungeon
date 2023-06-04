@@ -27,7 +27,7 @@ public class HealthComponent extends Component {
     private @DSLTypeMember(name = "on_death_function") IOnDeathFunction onDeath;
     private @DSLTypeMember(name = "get_hit_animation") Animation getHitAnimation;
     private @DSLTypeMember(name = "die_animation") Animation dieAnimation;
-    private final Logger healthLogger = Logger.getLogger(this.getClass().getName());
+    private transient Logger healthLogger;
 
     /**
      * Creates a new HealthComponent
@@ -52,6 +52,7 @@ public class HealthComponent extends Component {
         this.getHitAnimation = getHitAnimation;
         this.dieAnimation = dieAnimation;
         damageToGet = new ArrayList<>();
+        setupLogger();
     }
 
     /**
@@ -66,6 +67,7 @@ public class HealthComponent extends Component {
                 entity2 -> {},
                 new Animation(missingTexture, 100),
                 new Animation(missingTexture, 100));
+        setupLogger();
     }
 
     /**
@@ -202,5 +204,12 @@ public class HealthComponent extends Component {
      */
     public Optional<Entity> getLastDamageCause() {
         return Optional.ofNullable(this.lastCause);
+    }
+
+    /**
+     * Set up the Logger for the HealthComponent
+     */
+    public void setupLogger() {
+        healthLogger = Logger.getLogger(this.getClass().getName());
     }
 }
