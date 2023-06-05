@@ -60,3 +60,4 @@ replay_pid*
 # Game Generated Files #
 ########################
 dungeon_config.json
+game/saves/save.txt
