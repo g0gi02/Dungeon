@@ -50,5 +50,9 @@ public abstract class NPC extends Entity {
         new AnimationComponent(this, idleLeft, idleRight);
     }
 
+    /**
+     * Set up the AIComponent for the NPC
+     */
+    public void setupAIComponent() {}
 }
 

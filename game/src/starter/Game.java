@@ -420,15 +420,27 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         togglePause();
         try (FileOutputStream fos = new FileOutputStream(saveFile);
             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            // remove AIComponent before serialization
             entities.stream().filter(entity -> entity.getComponent(AIComponent.class)
                 .isPresent()).forEach(entity -> entity.removeComponent(AIComponent.class));
+            // remove Ghosts HitboxComponent before serialization, as it contains an idle-AI
+            entities.stream().filter(entity -> entity instanceof Ghost).map(Ghost.class::cast)
+                .forEach(ghost -> ghost.removeComponent(HitboxComponent.class));
+            // write relevant data to oos
             oos.writeObject(dragonExists);
             oos.writeObject(levelCounter);
             oos.writeObject(currentLevel);
             oos.writeObject(hero);
             oos.writeObject(entities);
             oos.close();
-            entities.stream().filter(entity -> entity instanceof Monster).map(Monster.class::cast).forEach(monster -> monster.setupAIComponent());
+            // re-add AIComponents to Entities
+            entities.stream().filter(entity -> entity instanceof Monster).map(Monster.class::cast)
+                .forEach(Monster::setupAIComponent);
+            entities.stream().filter(entity -> entity instanceof NPC).map(NPC.class::cast)
+                .forEach(NPC::setupAIComponent);
+            // re-add Ghosts HitboxComponent
+            entities.stream().filter(entity -> entity instanceof Ghost).map(Ghost.class::cast)
+                .forEach(Ghost::setupHitboxComponent);
             gameLogger.info("Game saved successfully.");
         } catch (IOException ex) {
             ex.printStackTrace();

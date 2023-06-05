@@ -15,7 +15,6 @@ public class Gravestone extends NPC {
     //make sure grave can only be activated once per level
     private boolean graveActive = true;
 
-
     private static final String PATH_TO_IDLE = "gravestone";
 
     private Ghost ghost;
@@ -39,7 +38,6 @@ public class Gravestone extends NPC {
         return new Gravestone(
             Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint(), ghost);
     }
-
 
     private void setupHitboxComponent() {
         new HitboxComponent(
@@ -78,32 +76,4 @@ public class Gravestone extends NPC {
             System.out.println("Punishment?!");
         }
     }
-
-
-
-    /*
-    private boolean isGraveActive = false;
-    private final Ghost ghost;
-
-    private void setUpPositionComponent() {
-        new PositionComponent(this);
-    }
-
-    private void setUpHitboxComponent() {
-        new HitboxComponent(
-            this,
-            (you, other, direction) -> rewardHero(other),
-            (you, other, direction) -> System.out.println()
-        );
-    }
-
-    public void rewardHero(Entity hero) {
-        if (hero instanceof Hero && !isGraveActive) {
-            isGraveActive = true;
-            ghost.graveInteraction();
-        }
-    }
-    */
-
-
 }

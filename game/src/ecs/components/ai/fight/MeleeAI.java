@@ -36,8 +36,7 @@ public class MeleeAI implements IFightAI {
                 timeSinceLastUpdate = -1;
             }
             timeSinceLastUpdate++;
-            if(path != null)
-            AITools.move(entity, path);
+            if(path != null) AITools.move(entity, path);
         }
     }
 }
