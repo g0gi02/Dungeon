@@ -253,6 +253,7 @@ public class AITools {
                                 .orElseThrow(
                                         () -> new MissingComponentException("PositionComponent"));
         ILevel level = Game.currentLevel;
+        if (path.getCount() == 0) path.add(level.getTileAtEntity(entity));
         boolean finished =
                 path.get(path.getCount() - 1)
                         .equals(level.getTileAt(pc.getPosition().toCoordinate()));
@@ -280,6 +281,7 @@ public class AITools {
                                 .orElseThrow(
                                         () -> new MissingComponentException("PositionComponent"));
         ILevel level = Game.currentLevel;
+        if (path.getCount() == 0) path.add(level.getTileAtEntity(entity));
         return path.get(path.getCount() - 1)
                 .equals(level.getTileAt(pc.getPosition().toCoordinate()));
     }

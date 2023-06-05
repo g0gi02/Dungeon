@@ -470,18 +470,16 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             newHero.setupLogger();
             for (Entity entity : newEntities) {
                 entity.setupLogger();
-                if (entity instanceof Monster) {
-                    ((Monster) entity).setupAIComponent();
-                }
+                entity.setupAIComponent();
             }
             // add objects to game
-            levelAPI.loadLevel(newCurrentLevel);
             dragonExists = newDragonExists;
             levelCounter = newLevelCounter;
             hero = newHero;
             // remove old entities before adding new ones
             entities.clear();
             entities.addAll(newEntities);
+            levelAPI.loadLevel(newCurrentLevel);
             gameLogger.info("Game loaded successfully.");
         } catch (IOException | ClassNotFoundException ex) {
             gameLogger.severe("File: "+saveFile+" could not be loaded.");

@@ -61,4 +61,9 @@ public class Entity implements Serializable {
         entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
         components.forEach((klass, component) -> component.setupLogger());
     }
+
+    /**
+     * Set up the AIComponent for the Entity
+     */
+    public void setupAIComponent() {}
 }
