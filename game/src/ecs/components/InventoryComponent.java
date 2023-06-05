@@ -94,6 +94,7 @@ public class InventoryComponent extends Component {
     /**
      * Set up the Logger for the InventoryComponent
      */
+    @Override
     public void setupLogger() {
         inventoryLogger = Logger.getLogger(this.getClass().getName());
     }

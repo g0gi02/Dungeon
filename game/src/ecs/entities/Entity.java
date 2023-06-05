@@ -54,10 +54,11 @@ public class Entity implements Serializable {
     }
 
     /**
-     * Set up the Logger for the Entity
+     * Set up the Logger for the Entity and its Components
      */
     public void setupLogger() {
         entityLogger = Logger.getLogger(this.getClass().getName());
         entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+        components.forEach((klass, component) -> component.setupLogger());
     }
 }

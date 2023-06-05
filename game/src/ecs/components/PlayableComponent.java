@@ -152,6 +152,7 @@ public class PlayableComponent extends Component {
     /**
      * Set up the Logger for the PlayableComponent
      */
+    @Override
     public void setupLogger() {
         playableCompLogger = Logger.getLogger(this.getClass().getName());
     }

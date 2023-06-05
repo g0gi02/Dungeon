@@ -75,6 +75,7 @@ public class PositionComponent extends Component {
      * @return the position of the associated entity
      */
     public Point getPosition() {
+        if (positionCompLogger == null) setupLogger();
         positionCompLogger.log(
                 CustomLogLevel.DEBUG,
                 "Fetching position for entity '"
@@ -96,6 +97,7 @@ public class PositionComponent extends Component {
     /**
      * Set up the Logger for the PositionComponent
      */
+    @Override
     public void setupLogger() {
         positionCompLogger = Logger.getLogger(this.getClass().getName());
     }

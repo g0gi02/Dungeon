@@ -25,7 +25,7 @@ public abstract class Monster extends Entity {
     private final float ySpeed;
     private final int MAX_HEALTH;
     private final float attackRange;
-    
+
     private final String pathToIdleLeft;
     private final String pathToIdleRight;
     private final String pathToRunLeft;
@@ -92,4 +92,9 @@ public abstract class Monster extends Entity {
     private void action(Entity entity) {
         System.out.println("monsterAction");
     }
+
+    /**
+     * Set up the AIComponent for the Monster
+     */
+    public void setupAIComponent() {}
 }

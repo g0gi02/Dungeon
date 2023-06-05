@@ -79,6 +79,7 @@ public class HitboxComponent extends Component {
      * @param direction direction in which the collision happens
      */
     public void onLeave(HitboxComponent other, Tile.Direction direction) {
+        if (hitboxLogger == null) setupLogger();
         if (iCollideLeave != null) {
             hitboxLogger.log(
                     CustomLogLevel.DEBUG,
@@ -153,6 +154,7 @@ public class HitboxComponent extends Component {
     /**
      * Set up the Logger for the HitboxComponent
      */
+    @Override
     public void setupLogger() {
         hitboxLogger = Logger.getLogger(this.getClass().getName());
     }

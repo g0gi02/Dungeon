@@ -38,4 +38,9 @@ public abstract class Component implements Serializable {
     public Entity getEntity() {
         return entity;
     }
+
+    /**
+     * Set up the Logger for the Component
+     */
+    public void setupLogger() {}
 }

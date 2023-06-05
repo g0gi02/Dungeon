@@ -107,7 +107,7 @@ public class HealthComponent extends Component {
                         .filter(d -> d.damageType() == dt)
                         .mapToInt(Damage::damageAmount)
                         .sum();
-
+        if (healthLogger == null) setupLogger();
         healthLogger.log(
                 CustomLogLevel.DEBUG,
                 this.getClass().getSimpleName()
@@ -209,6 +209,7 @@ public class HealthComponent extends Component {
     /**
      * Set up the Logger for the HealthComponent
      */
+    @Override
     public void setupLogger() {
         healthLogger = Logger.getLogger(this.getClass().getName());
     }

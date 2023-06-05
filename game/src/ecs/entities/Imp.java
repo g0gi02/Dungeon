@@ -17,7 +17,7 @@ import ecs.components.ai.AIComponent;
 import ecs.components.PositionComponent;
 
 public class Imp extends Monster {
-    
+
     private static final float X_SPEED = 0.15f;
     private static final float Y_SPEED = 0.15f;
     private static final int MAX_HEALTH = 2;
@@ -59,7 +59,7 @@ public class Imp extends Monster {
 
     /**
      * Creates a new Imp at a random position on the current level.
-     * 
+     *
      * @return a new Imp Monster
      */
     public static Imp createNewImp() {
@@ -98,7 +98,8 @@ public class Imp extends Monster {
         new SkillComponent(this).addSkill(skill);
     }
 
-    private void setupAIComponent() {
+    @Override
+    public void setupAIComponent() {
         new AIComponent(this, setupFightStrategy(),
                         setupIdleStrategy(), setupTransitionStrategy());
     }

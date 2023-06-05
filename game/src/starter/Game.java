@@ -12,12 +12,10 @@ import configuration.Configuration;
 import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
-import ecs.components.HealthComponent;
-import ecs.components.MissingComponentException;
-import ecs.components.PositionComponent;
+import ecs.components.*;
+import ecs.components.ai.AIComponent;
 import ecs.entities.*;
 import ecs.entities.Imp;
-import ecs.components.VelocityComponent;
 import ecs.systems.*;
 
 import graphic.DungeonCamera;
@@ -418,21 +416,25 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      * @param saveFile the file being written to
      */
     public void saveGame(String saveFile) {
+        gameLogger.info("Game saving started.");
+        togglePause();
         try (FileOutputStream fos = new FileOutputStream(saveFile);
             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            entities.stream().filter(entity -> entity.getComponent(AIComponent.class)
+                .isPresent()).forEach(entity -> entity.removeComponent(AIComponent.class));
             oos.writeObject(dragonExists);
             oos.writeObject(levelCounter);
             oos.writeObject(currentLevel);
-            System.out.println("before hero");
             oos.writeObject(hero);
-            System.out.println("after hero");
             oos.writeObject(entities);
             oos.close();
+            entities.stream().filter(entity -> entity instanceof Monster).map(Monster.class::cast).forEach(monster -> monster.setupAIComponent());
             gameLogger.info("Game saved successfully.");
         } catch (IOException ex) {
             ex.printStackTrace();
             gameLogger.severe("Game could not be saved.");
         }
+        togglePause();
     }
 
     /**
@@ -441,21 +443,37 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      * @param saveFile the file being read from
      */
     public void loadGame(String saveFile) {
+        gameLogger.info("Game loading started.");
+        togglePause();
         try (FileInputStream fis = new FileInputStream(saveFile);
             ObjectInputStream ois = new ObjectInputStream(fis)) {
-            dragonExists = (boolean) ois.readObject();
-            levelCounter = (int) ois.readObject();
-            currentLevel = (ILevel) ois.readObject();
-            hero = (Hero) ois.readObject();
-            Set<Entity> newEntities = (HashSet) ois.readObject();
+            // read objects from file
+            boolean newDragonExists = (boolean) ois.readObject();
+            int newLevelCounter = (int) ois.readObject();
+            ILevel newCurrentLevel = (ILevel) ois.readObject();
+            Hero newHero = (Hero) ois.readObject();
+            Set<Entity> newEntities = (HashSet<Entity>) ois.readObject();
+            ois.close();
+            // setup transient values for read objects
+            newHero.setupLogger();
+            for (Entity entity : newEntities) {
+                entity.setupLogger();
+                if (entity instanceof Monster) {
+                    ((Monster) entity).setupAIComponent();
+                }
+            }
+            // add objects to game
+            levelAPI.loadLevel(newCurrentLevel);
+            dragonExists = newDragonExists;
+            levelCounter = newLevelCounter;
+            hero = newHero;
+            // remove old entities before adding new ones
             entities.clear();
             entities.addAll(newEntities);
-            for (Entity entity : entities) {
-                entity.setupLogger();
-            }
-            ois.close();
+            gameLogger.info("Game loaded successfully.");
         } catch (IOException | ClassNotFoundException ex) {
             gameLogger.severe("File: "+saveFile+" could not be loaded.");
         }
+        togglePause();
     }
 }

@@ -40,7 +40,6 @@ public class AnimationComponent extends Component {
      */
     public AnimationComponent(Entity entity, Animation idle) {
         this(entity, idle, idle);
-        setupLogger();
     }
 
     /**
@@ -80,6 +79,7 @@ public class AnimationComponent extends Component {
      */
     public Animation getCurrentAnimation() {
         if (currentAnimation.getAnimationFrames().size() > 0) {
+            if (animCompLogger == null) setupLogger();
             animCompLogger.log(
                     CustomLogLevel.DEBUG,
                     this.getClass().getSimpleName()
@@ -116,6 +116,7 @@ public class AnimationComponent extends Component {
     /**
      * Set up the Logger for the AnimationComponent
      */
+    @Override
     public void setupLogger() {
         animCompLogger = Logger.getLogger(this.getClass().getName());
     }

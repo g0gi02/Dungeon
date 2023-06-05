@@ -52,6 +52,17 @@ public class LevelAPI {
     }
 
     /**
+     * Load a specified Level
+     *
+     * @param level the level to be loaded
+     */
+    public void loadLevel(ILevel level) {
+        currentLevel = level;
+        onLevelLoader.onLevelLoad();
+        levelAPI_logger.info("A new level was loaded.");
+    }
+
+    /**
      * Load a new level with random size and the given desing
      *
      * @param designLabel The design that the level should have

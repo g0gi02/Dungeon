@@ -147,6 +147,7 @@ public class VelocityComponent extends Component {
     /**
      * Set up the Logger for the VelocityComponent
      */
+    @Override
     public void setupLogger() {
         velocityCompLogger = Logger.getLogger(this.getClass().getName());
     }
