@@ -78,7 +78,7 @@ public class Ghost extends NPC {
 
     /**
      *  ghost will chase the Hero with some distance
-     **/
+     */
     private IFightAI setupFollowStrategy() {
         Hero hero = (Hero) Game.getHero().get();
         Ghost ghost = this;
@@ -108,7 +108,7 @@ public class Ghost extends NPC {
 
     /**
      * make the ghost freak out when it gets touched by the Hero
-     **/
+     */
     private void setUpPassiveAITransition() {
         VelocityComponent speed = (VelocityComponent) this.getComponent(VelocityComponent.class).get();
         speed.setYVelocity(0.5f);
@@ -118,7 +118,7 @@ public class Ghost extends NPC {
 
     /**
      *  this will make the ghost disappear,
-     **/
+     */
     public void makeGhostInvis() {
         Set<Entity> allEntities = Game.getEntities();
         for (Entity allEntity : allEntities) {

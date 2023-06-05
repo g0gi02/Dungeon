@@ -1,7 +1,5 @@
 package ecs.components.skill;
 
-import javax.swing.text.Position;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -9,7 +7,6 @@ import ecs.components.PositionComponent;
 import ecs.components.VelocityComponent;
 import starter.Game;
 import tools.Point;
-import ecs.entities.Hero;
 import ecs.components.MissingComponentException;
 import ecs.entities.Entity;
 

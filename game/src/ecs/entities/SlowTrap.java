@@ -16,15 +16,12 @@ import level.tools.LevelElement;
 
 /** A trap that slow the player when go walks over it.  */
 public class SlowTrap extends Trap {
-    // private final String pathToIdleLeft = "monster/imp/idleLeft";
-    // private final String pathToIdleRight = "monster/imp/idleRight"
     public static final int frame_time_idle = 1;
     public static final int frame_time_triggered = 1;
     public static final List<String> DEFAULT_IDLE_ANIMATION_FRAMES =
             List.of("objects/slowtrap/slowtrap_idle_anim_f0.png")                    ;
     public static final List<String> DEFAULT_TRIGGERED_ANIMATION_FRAMES =
             List.of("objects/slowtrap/slowtrap_triggered_anim_f0.png");
-
 
     public SlowTrap(Point position){
         super(
@@ -35,13 +32,12 @@ public class SlowTrap extends Trap {
             false,
             position
         );
-
         setupHitboxComponent();
     }
 
     /**
      * creates Instance of SlowTrap with random position
-     * 
+     *
      * @return a new SlowTrap with a random position
      */
     public static SlowTrap createSlowTrap() {
@@ -51,7 +47,6 @@ public class SlowTrap extends Trap {
 
     private void setupHitboxComponent(){
         // TODO: Refactoring
-
         new HitboxComponent(this,
             (you, other, direction) -> {
                 System.out.println("TrapCollisionEnter");
@@ -84,6 +79,4 @@ public class SlowTrap extends Trap {
             .map(AnimationComponent.class::cast)
             .ifPresent(x -> x.setCurrentAnimation(x.getIdleRight()));
     }
-
-
 }

@@ -1,21 +1,14 @@
 package ecs.entities;
 
-import javax.swing.text.Position;
-
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
 import ecs.components.AnimationComponent;
 import ecs.components.PositionComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.ai.fight.IFightAI;
-import ecs.components.ai.fight.*;
-import ecs.components.ai.idle.*;
-import ecs.components.ai.AIComponent;
 import ecs.components.ai.idle.IIdleAI;
 import ecs.components.ai.transition.ITransition;
-import ecs.components.HitboxComponent;
 import graphic.Animation;
-import starter.Game;
 import tools.Point;
 import java.util.List;
 
@@ -44,9 +37,7 @@ public abstract class Monster extends Entity {
                    String pathToIdleRight,
                    String pathToRunLeft,
                    String pathToRunRight,
-                   Point position
-                   ) {
-
+                   Point position) {
         super();
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
@@ -86,8 +77,7 @@ public abstract class Monster extends Entity {
         new AnimationComponent(this, idleLeft, idleRight);
     }
 
-    private void attack(Entity entity) {
-    }
+    private void attack(Entity entity) {}
 
     private void action(Entity entity) {
         System.out.println("monsterAction");

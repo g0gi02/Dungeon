@@ -48,9 +48,7 @@ public class Imp extends Monster {
             PATH_TO_IDLE_RIGHT,
             PATH_TO_RUN_LEFT,
             PATH_TO_RUN_RIGHT,
-            position
-            );
-
+            position);
         setupHitboxComponent();
         setupSkillComponent();
         setupAIComponent();

@@ -27,13 +27,14 @@ public class Gravestone extends NPC {
             PATH_TO_IDLE,
             PATH_TO_IDLE,
             PATH_TO_IDLE,
-            position
-        );
+            position);
         this.ghost = ghost;
         setupHitboxComponent();
     }
 
-    //creates new gravestone
+    /**
+     * creates new gravestone
+     */
     public static Gravestone createNewGravestone(Ghost ghost) {
         return new Gravestone(
             Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint(), ghost);
@@ -51,7 +52,7 @@ public class Gravestone extends NPC {
      * interaction when ghost and hero arrive at the gravestone
      *
      * @param hero
-     **/
+     */
     public void rewardHero(Entity hero) {
         if (hero instanceof Hero && graveActive && ghost.ghostWantsToFollow) {
             graveActive = false;
@@ -62,7 +63,7 @@ public class Gravestone extends NPC {
 
     /**
      * if the Hero gets a reward, he will gain 5 lives, if he  gets punished, he looses 5 instead
-     **/
+     */
     public void graveInteraction() {
         Optional<Component> heroHealth = Game.getHero().get().getComponent(HealthComponent.class);
         HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();

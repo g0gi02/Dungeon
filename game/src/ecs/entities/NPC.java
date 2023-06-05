@@ -22,9 +22,7 @@ public abstract class NPC extends Entity {
         String pathToIdleRight,
         String pathToRunLeft,
         String pathToRunRight,
-        Point position
-    ) {
-
+        Point position) {
         super();
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
