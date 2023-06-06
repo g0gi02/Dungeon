@@ -9,7 +9,7 @@ import tools.Constants;
 
 public class AlwaysAggro implements IIdleAI {
     private final float radius;
-    private GraphPath<Tile> path;
+    private transient GraphPath<Tile> path;
     private final int breakTime;
     private int currentBreak = 0;
     private final Skill skill;
@@ -31,7 +31,7 @@ public class AlwaysAggro implements IIdleAI {
 
     @Override
     public void idle (Entity entity) {
-        if (path == null || AITools.pathFinishedOrLeft(entity, path)) {
+        if (path == null || path.getCount() == 0 || AITools.pathFinishedOrLeft(entity, path)) {
             if (currentBreak >= breakTime) {
                 currentBreak = 0;
                 path = AITools.calculatePathToRandomTileInRange(entity, radius);
@@ -48,12 +48,12 @@ public class AlwaysAggro implements IIdleAI {
         if (AITools.playerInRange(entity, radius)) {
             skill.execute(entity);
         } else {
-            if (timeSinceLastUpdate >= delay) {
+            if (timeSinceLastUpdate >= delay || path == null || path.getCount() == 0) {
                 path = AITools.calculatePathToHero(entity);
                 timeSinceLastUpdate = -1;
             }
             timeSinceLastUpdate++;
-            AITools.move(entity, path);
+            if(path.getCount() != 0) AITools.move(entity, path);
         }
     }
 }

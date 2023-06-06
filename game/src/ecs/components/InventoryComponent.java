@@ -14,7 +14,7 @@ public class InventoryComponent extends Component {
 
     private List<ItemData> inventory;
     private int maxSize;
-    private final Logger inventoryLogger = Logger.getLogger(this.getClass().getName());
+    private transient Logger inventoryLogger;
     private boolean isOpen;
 
     /**
@@ -27,6 +27,7 @@ public class InventoryComponent extends Component {
         super(entity);
         inventory = new ArrayList<>(maxSize);
         this.maxSize = maxSize;
+        setupLogger();
     }
 
     /**
@@ -165,5 +166,13 @@ public class InventoryComponent extends Component {
             if (itemData.getItemName().equals(itemClassName)) return true;
         }
         return false;
+    }
+
+    /**
+     * Set up the Logger for the InventoryComponent
+     */
+    @Override
+    public void setupLogger() {
+        inventoryLogger = Logger.getLogger(this.getClass().getName());
     }
 }

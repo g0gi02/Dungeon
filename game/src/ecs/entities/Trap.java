@@ -10,12 +10,12 @@ import graphic.Animation;
  * A Trap is an Entity with a PositionComponent and an AnimationComponent.
  * It can be triggered
  */
-public abstract class Trap extends Entity{    
+public abstract class Trap extends Entity{
     /**
      * @param frame_time_idle
      * @param frame_time_triggered
-     * @param Idleanimationpictures
-     * @param Triggeredanimationpictures
+     * @param DEFAULT_IDLE_ANIMATION_FRAMES
+     * @param DEFAULT_TRIGGERED_ANIMATION_FRAMES
      * @param isRepeatable
      * @param position
      */
@@ -36,12 +36,8 @@ public abstract class Trap extends Entity{
 
     /**
      * The method that is called when the trap is triggered
-     * 
+     *
      * @param entity
      */
-    private void onTrigger(Entity entity) {
-        
-    }
-
-
+    private void onTrigger(Entity entity) {}
 }

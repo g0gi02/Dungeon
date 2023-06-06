@@ -1,7 +1,5 @@
 package ecs.components.skill;
 
-import javax.swing.text.Position;
-
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
 import ecs.components.collision.ICollide;
@@ -11,7 +9,9 @@ import graphic.Animation;
 import starter.Game;
 import tools.Point;
 
-public abstract class DamageProjectileSkill implements ISkillFunction {
+import java.io.Serializable;
+
+public abstract class DamageProjectileSkill implements ISkillFunction, Serializable {
 
     private String pathToTexturesOfProjectile;
     private float projectileSpeed;
@@ -120,5 +120,4 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
             }
         };
     }
-    
 }

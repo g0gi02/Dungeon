@@ -1,7 +1,5 @@
 package ecs.components.skill;
 
-import javax.swing.text.Position;
-
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
 import ecs.components.collision.ICollide;
@@ -14,13 +12,13 @@ import tools.Point;
 public class ReturningProjectileSkill extends DamageProjectileSkill {
     private String pathToTexturesOfProjectile;
     private float projectileSpeed;
-    
+
     private float projectileRange;
     private Damage projectileDamage;
     private Point projectileHitboxSize;
-    
+
     private ITargetSelection selectionFunction;
-    
+
     public ReturningProjectileSkill(
             String pathToTexturesOfProjectile,
             float projectileSpeed,
@@ -42,7 +40,7 @@ public class ReturningProjectileSkill extends DamageProjectileSkill {
                 this.projectileHitboxSize = projectileHitboxSize;
                 this.selectionFunction = selectionFunction;
     }
-    
+
     @Override
     public void execute(Entity entity) {
         Entity projectile = new Entity();
@@ -52,10 +50,10 @@ public class ReturningProjectileSkill extends DamageProjectileSkill {
                                 .orElseThrow(
                                         () -> new MissingComponentException("PositionComponent"));
         new PositionComponent(projectile, epc.getPosition());
-    
+
         Animation animation = AnimationBuilder.buildAnimation(pathToTexturesOfProjectile);
         new AnimationComponent(projectile, animation);
-    
+
         Point aimedOn = selectionFunction.selectTargetPoint();
         Point targetPoint =
                 SkillTools.calculateLastPositionInRange(
@@ -78,7 +76,7 @@ public class ReturningProjectileSkill extends DamageProjectileSkill {
                                         });
                     }
                 };
-    
+
         new HitboxComponent(
                 projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
     }
@@ -86,7 +84,7 @@ public class ReturningProjectileSkill extends DamageProjectileSkill {
     private void createReturnProjectile(Entity originProjectile, Entity entity, Entity hitEntity) {
         Point startPoint = getPositionOfEntity(originProjectile);
         Point endPoint = getStartPositionOfProjectile(originProjectile);
-       
+
         Entity projectile = new Entity();
         new PositionComponent(projectile, startPoint);
         Animation animation = AnimationBuilder.buildAnimation(pathToTexturesOfProjectile);

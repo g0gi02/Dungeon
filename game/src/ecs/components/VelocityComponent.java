@@ -20,7 +20,7 @@ public class VelocityComponent extends Component {
 
     private @DSLTypeMember(name = "move_right_animation") Animation moveRightAnimation;
     private @DSLTypeMember(name = "move_left_animation") Animation moveLeftAnimation;
-    private final Logger velocityCompLogger = Logger.getLogger(this.getClass().getName());
+    private transient Logger velocityCompLogger;
 
     /**
      * @param entity associated entity
@@ -42,6 +42,7 @@ public class VelocityComponent extends Component {
         this.yVelocity = yVelocity;
         this.moveLeftAnimation = moveLeftAnimation;
         this.moveRightAnimation = moveRightAnimation;
+        setupLogger();
     }
 
     /**
@@ -55,6 +56,7 @@ public class VelocityComponent extends Component {
         this.yVelocity = 0;
         this.moveLeftAnimation = new Animation(missingTexture, 100);
         this.moveRightAnimation = new Animation(missingTexture, 100);
+        setupLogger();
     }
 
     /**
@@ -140,5 +142,13 @@ public class VelocityComponent extends Component {
      */
     public Animation getMoveLeftAnimation() {
         return moveLeftAnimation;
+    }
+
+    /**
+     * Set up the Logger for the VelocityComponent
+     */
+    @Override
+    public void setupLogger() {
+        velocityCompLogger = Logger.getLogger(this.getClass().getName());
     }
 }

@@ -2,7 +2,9 @@ package ecs.components.skill;
 
 import ecs.entities.Entity;
 
-public abstract class BuffSkill implements ISkillFunction {
+import java.io.Serializable;
+
+public abstract class BuffSkill implements ISkillFunction, Serializable {
 
     @Override
     public void execute(Entity entity) {}

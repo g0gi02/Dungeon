@@ -1,13 +1,13 @@
 package ecs.components.skill;
 
 import ecs.entities.Entity;
-import starter.Game;
 import tools.Constants;
 import ecs.entities.Hero;
 
+import java.io.Serializable;
 import java.util.logging.Logger;
 
-public class Skill {
+public class Skill implements Serializable {
 
     private ISkillFunction skillFunction;
     private int coolDownInFrames;

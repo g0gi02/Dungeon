@@ -14,7 +14,7 @@ import logging.CustomLogLevel;
 public class PlayableComponent extends Component {
 
     private boolean playable;
-    private final Logger playableCompLogger = Logger.getLogger(this.getClass().getName());
+    private transient Logger playableCompLogger;
 
     private Skill meleeSkill;
     private Skill skillSlot1;
@@ -33,12 +33,14 @@ public class PlayableComponent extends Component {
         playable = true;
         this.skillSlot1 = skillSlot1;
         this.skillSlot2 = skillSlot2;
+        setupLogger();
     }
 
     /** {@inheritDoc} */
     public PlayableComponent(Entity entity) {
         super(entity);
         playable = true;
+        setupLogger();
     }
 
     /**
@@ -104,7 +106,7 @@ public class PlayableComponent extends Component {
     public void setSkillSlot5(Skill skillSlot5) {
         this.skillSlot5 = skillSlot5;
     }
-    
+
     /**
      * @return skill on melee skill slot
      */
@@ -145,5 +147,13 @@ public class PlayableComponent extends Component {
      */
     public Optional<Skill> getSkillSlot5() {
         return Optional.ofNullable(skillSlot5);
+    }
+
+    /**
+     * Set up the Logger for the PlayableComponent
+     */
+    @Override
+    public void setupLogger() {
+        playableCompLogger = Logger.getLogger(this.getClass().getName());
     }
 }

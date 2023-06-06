@@ -15,7 +15,7 @@ import ecs.components.HitboxComponent;
 import ecs.components.ai.AIComponent;
 
 public class Slime extends Monster {
-        
+
     private static final float X_SPEED = 0.05f;
     private static final float Y_SPEED = 0.05f;
     private static final int MAX_HEALTH = 2;
@@ -51,7 +51,7 @@ public class Slime extends Monster {
 
     /**
      * Creates a new Slime at a random position on the current level.
-     * 
+     *
      * @return a new Slime Monster
      */
     public static Slime createNewSlime() {
@@ -83,7 +83,8 @@ public class Slime extends Monster {
         );
     }
 
-    private void setupAIComponent() {
+    @Override
+    public void setupAIComponent() {
         new AIComponent(this, setupFightStrategy(),
                         setupIdleStrategy(), setupTransitionStrategy());
     }

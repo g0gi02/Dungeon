@@ -15,7 +15,7 @@ import ecs.components.HitboxComponent;
 import ecs.components.ai.AIComponent;
 
 public class Chort extends Monster {
-        
+
     private static final float X_SPEED = 0.2f;
     private static final float Y_SPEED = 0.2f;
     private static final int MAX_HEALTH = 5;
@@ -53,7 +53,7 @@ public class Chort extends Monster {
 
     /**
      * Creates a new Chort at a random position on the current level.
-     * 
+     *
      * @return a new Chort Monster
      */
     public static Chort createNewChort() {
@@ -85,7 +85,8 @@ public class Chort extends Monster {
         );
     }
 
-    private void setupAIComponent() {
+    @Override
+    public void setupAIComponent() {
         new AIComponent(this, setupFightStrategy(),
                         setupIdleStrategy(), setupTransitionStrategy());
     }

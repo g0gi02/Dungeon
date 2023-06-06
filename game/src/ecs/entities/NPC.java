@@ -22,9 +22,7 @@ public abstract class NPC extends Entity {
         String pathToIdleRight,
         String pathToRunLeft,
         String pathToRunRight,
-        Point position
-    ) {
-
+        Point position) {
         super();
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
@@ -50,5 +48,9 @@ public abstract class NPC extends Entity {
         new AnimationComponent(this, idleLeft, idleRight);
     }
 
+    /**
+     * Set up the AIComponent for the NPC
+     */
+    public void setupAIComponent() {}
 }
 

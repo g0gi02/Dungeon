@@ -1,22 +1,17 @@
 package ecs.entities;
 
-import dslToGame.AnimationBuilder;
 import ecs.components.*;
 import ecs.components.ai.AIComponent;
 import ecs.components.ai.fight.CollideAI;
 import ecs.components.ai.fight.IFightAI;
-import ecs.components.ai.fight.MeleeAI;
 import ecs.components.ai.idle.IIdleAI;
 import ecs.components.ai.idle.RadiusWalk;
 import ecs.components.ai.idle.StaticRadiusWalk;
 import ecs.components.ai.transition.ITransition;
 import ecs.components.ai.transition.RangeTransition;
 import ecs.components.ai.transition.friendlyTransition;
-import graphic.Animation;
 import level.tools.LevelElement;
 import starter.Game;
-import java.math.*;
-import java.util.Optional;
 
 import tools.Point;
 
@@ -59,8 +54,10 @@ public class Ghost extends NPC {
             Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint());
     }
 
-    //checks if the Hero enters ghosts private zone
-    private void setupHitboxComponent() {
+    /**
+     * checks if the Hero enters ghosts private zone
+     */
+    public void setupHitboxComponent() {
         new HitboxComponent(
             this,
             (you, other, direction) -> {
@@ -74,14 +71,14 @@ public class Ghost extends NPC {
         );
     }
 
-    private void setupAIComponent() {
+    @Override
+    public void setupAIComponent() {
         new AIComponent(this, setupFollowStrategy(), setupIdleAIStrategy(), setupTransitionStrategy());
-
     }
 
     /**
      *  ghost will chase the Hero with some distance
-     **/
+     */
     private IFightAI setupFollowStrategy() {
         Hero hero = (Hero) Game.getHero().get();
         Ghost ghost = this;
@@ -111,7 +108,7 @@ public class Ghost extends NPC {
 
     /**
      * make the ghost freak out when it gets touched by the Hero
-     **/
+     */
     private void setUpPassiveAITransition() {
         VelocityComponent speed = (VelocityComponent) this.getComponent(VelocityComponent.class).get();
         speed.setYVelocity(0.5f);
@@ -121,63 +118,11 @@ public class Ghost extends NPC {
 
     /**
      *  this will make the ghost disappear,
-     **/
+     */
     public void makeGhostInvis() {
-
         Set<Entity> allEntities = Game.getEntities();
         for (Entity allEntity : allEntities) {
             if (allEntity instanceof Ghost) Game.removeEntity(allEntity);
         }
     }
-
-
-
-
-
-
-
-
-
-
-    /*
-    private Hero hero;
-    private boolean Ghostactive = false;
-
-
-    private void setUpPositionComponent() {
-        new PositionComponent(this);
-    }
-
-    private void setUpPassiveAITransition() {
-        new AIComponent(this, new CollideAI(2f), new StaticRadiusWalk(25f, 1), new friendlyTransition());
-    }
-
-    private void getGhostStatus() {
-        if (false) {
-            System.out.println("Ghost is in idle");
-            setUpPassiveAITransition();
-        } else {
-            Ghostactive = true;
-            new AIComponent(this);
-            System.out.println("Ghost will try to follow the Hero");
-        }
-    }
-
-    public void graveInteraction() {
-        if (++levelCounter % 2 == 0) {
-            Optional<Component> heroHealth = this.hero.getComponent(HealthComponent.class);
-            HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();
-            currentHeroHealth.setCurrentHealthpoints(currentHeroHealth.getCurrentHealthpoints() + 5);
-            System.out.println("Reward");
-
-
-        } else {
-            Optional<Component> heroHealth = this.hero.getComponent(HealthComponent.class);
-            HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();
-            currentHeroHealth.setCurrentHealthpoints(currentHeroHealth.getCurrentHealthpoints() - 5);
-            System.out.println("Punishment");
-        }
-    }
-
-     */
 }
