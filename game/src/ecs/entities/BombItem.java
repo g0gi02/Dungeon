@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
-    private Logger bombItemLogger = Logger.getLogger("BombItem");
+    private transient Logger bombItemLogger;
     private ItemComponent itemComponent;
     private int damageAmmount = 10;
     private float range = 5;
@@ -25,6 +25,7 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     public BombItem() {
         super();
+        setupLogger();
         setupItemComponent();
         setupAnimationComponent();
         setupPositionComponent();
@@ -39,6 +40,7 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     public BombItem(ItemData itemData, Point point) {
         super();
+        setupLogger();
         new ItemComponent(this, itemData);
         new PositionComponent(this, point);
         setupHitBoxComponent();
@@ -93,6 +95,7 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onCollect(Entity WorldItemEntity, Entity whoCollides) {
+        if (bombItemLogger == null) setupLogger();
         bombItemLogger.info(WorldItemEntity.toString() + " collected by " + whoCollides.toString());
         if (!Game.getHero().isPresent())
             return;
@@ -119,6 +122,7 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onUse(Entity e, ItemData item) {
+        if (bombItemLogger == null) setupLogger();
         bombItemLogger.info(e.toString() + " used " + item.getItemName());
         if (!e.getComponent(InventoryComponent.class).isPresent())
             return;
@@ -143,6 +147,7 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onDrop(Entity user, ItemData which, Point position) {
+        if (bombItemLogger == null) setupLogger();
         bombItemLogger.info(user.toString() + " dropped " + which.getItemName() + " at " + position.toString());
         Game.addEntity(new BombItem(which, position));
         if (!user.getComponent(InventoryComponent.class).isPresent())
@@ -159,6 +164,7 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      * @param entity
      */
     private void explode(Entity entity) {
+        if (bombItemLogger == null) setupLogger();
         bombItemLogger.info(entity.toString() + " used " + itemComponent.getItemData().getItemName());
         Set<Entity> entities = Game.getEntities();
 
@@ -177,5 +183,9 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
             }
         }
     }
-    
+
+    @Override
+    public void setupLogger() {
+        bombItemLogger = Logger.getLogger("BombItem");
+    }
 }

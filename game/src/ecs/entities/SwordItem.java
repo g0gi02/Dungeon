@@ -14,11 +14,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class SwordItem extends Item implements IOnUse, IOnCollect, IOnDrop {
-    private Logger SwordItemLogger = Logger.getLogger("SwordItem");
+    private transient Logger SwordItemLogger;
     private ItemComponent itemComponent;
 
     public SwordItem() {
         super();
+        setupLogger();
         setupItemComponent();
         setupAnimationComponent();
         setupPositionComponent();
@@ -28,6 +29,7 @@ public class SwordItem extends Item implements IOnUse, IOnCollect, IOnDrop {
 
     public SwordItem(ItemData itemData, Point point) {
         super();
+        setupLogger();
         new ItemComponent(this, itemData);
         new PositionComponent(this, point);
         setupHitBoxComponent();
@@ -78,6 +80,7 @@ public class SwordItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onCollect(Entity WorldItemEntity, Entity whoCollides) {
+        if (SwordItemLogger == null) setupLogger();
         SwordItemLogger.info(WorldItemEntity.toString() + " collected by " + whoCollides.toString());
         if (!Game.getHero().isPresent())
             return;
@@ -105,6 +108,7 @@ public class SwordItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onUse(Entity e, ItemData item) {
+        if (SwordItemLogger == null) setupLogger();
         SwordItemLogger.info(e.toString() + " used " + item.getItemName());
     }
 
@@ -116,6 +120,7 @@ public class SwordItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onDrop(Entity user, ItemData which, Point position) {
+        if (SwordItemLogger == null) setupLogger();
         SwordItemLogger.info(user.toString() + " dropped " + which.getItemName() + " at " + position.toString());
         Game.addEntity(new SwordItem(which, position));
         if (!user.getComponent(InventoryComponent.class).isPresent())
@@ -132,10 +137,15 @@ public class SwordItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      * @param entity
      */
     private void unlockSkill(Entity entity) {
+        if (SwordItemLogger == null) setupLogger();
         SwordItemLogger.info(entity.toString() + " unlocked the Swordskill");
         Hero hero = (Hero) entity;
         hero.unlockMeleeSkill();
-    
+
     }
-    
+
+    @Override
+    public void setupLogger() {
+        SwordItemLogger = Logger.getLogger("SwordItem");
+    }
 }

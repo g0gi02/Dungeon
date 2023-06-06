@@ -31,4 +31,7 @@ public abstract class Item extends Entity implements IOnCollect, IOnUse, IOnDrop
   public abstract void onUse(Entity e, ItemData item);
 
   public abstract void onDrop(Entity user, ItemData which, Point position);
+
+  @Override
+  public void setupLogger() {}
 }

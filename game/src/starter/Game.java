@@ -13,8 +13,10 @@ import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
 import ecs.components.*;
+import ecs.components.ai.*;
 import ecs.entities.*;
 import ecs.entities.Imp;
+import ecs.items.ItemData;
 import ecs.systems.*;
 
 import graphic.DungeonCamera;
@@ -424,7 +426,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameLogger.info("Game saving started.");
         togglePause();
         try (FileOutputStream fos = new FileOutputStream(saveFile);
-            ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             // remove AIComponent before serialization
             entities.stream().filter(entity -> entity.getComponent(AIComponent.class)
                 .isPresent()).forEach(entity -> entity.removeComponent(AIComponent.class));
@@ -463,7 +465,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameLogger.info("Game loading started.");
         togglePause();
         try (FileInputStream fis = new FileInputStream(saveFile);
-            ObjectInputStream ois = new ObjectInputStream(fis)) {
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
             // read objects from file
             boolean newDragonExists = (boolean) ois.readObject();
             int newLevelCounter = (int) ois.readObject();
@@ -476,12 +478,13 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             levelCounter = newLevelCounter;
             hero = newHero;
             hero.setupLogger();
-            // remove old entities before adding new ones
+            // set up transient values
             for (Entity entity : newEntities) {
                 if (entity instanceof Ghost) ((Ghost) entity).setupHitboxComponent();
                 entity.setupLogger();
                 entity.setupAIComponent();
             }
+            // remove old entities before adding new ones
             entitiesToRemove.addAll(entities);
             entitiesToAdd.addAll(newEntities);
             // set the level
