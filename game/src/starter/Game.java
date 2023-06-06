@@ -13,6 +13,7 @@ import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
 import ecs.components.HealthComponent;
+import ecs.components.InventoryComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.entities.*;
@@ -237,6 +238,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             Imp.createNewImp();
             Slime.createNewSlime();
             Chort.createNewChort();
+            //If the player has a sword in the inventory, it wont be added again
+            InventoryComponent ic = (InventoryComponent) getHero().get().getComponent(InventoryComponent.class).get();
+            if(!ic.hasItemOfType("Sword")) addEntity(new SwordItem());
+            addEntity(new HealthPotion());
+            addEntity(new BombItem());
+            addEntity(new BackpackItem());
         }
 
         entities.clear();

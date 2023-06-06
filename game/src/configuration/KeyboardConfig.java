@@ -25,8 +25,34 @@ public class KeyboardConfig {
     public static final ConfigKey<Integer> THIRD_SKILL =
             new ConfigKey<>(new String[] {"skill", "third"}, new ConfigIntValue(Input.Keys.Z));
     public static final ConfigKey<Integer> FOURTH_SKILL =
-            new ConfigKey<>(new String[] {"skill", "fourth"}, new ConfigIntValue(Input.Keys.NUM_1));
+            new ConfigKey<>(new String[] {"skill", "fourth"}, new ConfigIntValue(Input.Keys.J));
     public static final ConfigKey<Integer> FIFTH_SKILL =
-            new ConfigKey<>(new String[] {"skill", "fifth"}, new ConfigIntValue(Input.Keys.NUM_2));
+            new ConfigKey<>(new String[] {"skill", "fifth"}, new ConfigIntValue(Input.Keys.K));
+
+    public static final ConfigKey<Integer> INVENTORY =
+            new ConfigKey<>(new String[] {"inventory", "inventory"}, new ConfigIntValue(Input.Keys.I));
+    public static final ConfigKey<Integer> INVENTORY_DROP =
+            new ConfigKey<>(new String[] {"inventory", "drop"}, new ConfigIntValue(Input.Keys.L));
+    public static final ConfigKey<Integer> INVENTORY_FIRST =
+            new ConfigKey<>(new String[] {"inventory", "first"}, new ConfigIntValue(Input.Keys.NUM_1));
+    public static final ConfigKey<Integer> INVENTORY_SECOND =
+            new ConfigKey<>(new String[] {"inventory", "second"}, new ConfigIntValue(Input.Keys.NUM_2));
+    public static final ConfigKey<Integer> INVENTORY_THIRD =
+            new ConfigKey<>(new String[] {"inventory", "third"}, new ConfigIntValue(Input.Keys.NUM_3));
+    public static final ConfigKey<Integer> INVENTORY_FOURTH =
+            new ConfigKey<>(new String[] {"inventory", "fourth"}, new ConfigIntValue(Input.Keys.NUM_4));
+    public static final ConfigKey<Integer> INVENTORY_FIFTH =
+            new ConfigKey<>(new String[] {"inventory", "fifth"}, new ConfigIntValue(Input.Keys.NUM_5));
+    public static final ConfigKey<Integer> INVENTORY_SIXTH =
+            new ConfigKey<>(new String[] {"inventory", "sixth"}, new ConfigIntValue(Input.Keys.NUM_6));
+    public static final ConfigKey<Integer> INVENTORY_SEVENTH =
+            new ConfigKey<>(new String[] {"inventory", "seventh"}, new ConfigIntValue(Input.Keys.NUM_7));
+    public static final ConfigKey<Integer> INVENTORY_EIGHTH =
+            new ConfigKey<>(new String[] {"inventory", "eighth"}, new ConfigIntValue(Input.Keys.NUM_8));
+    public static final ConfigKey<Integer> INVENTORY_NINTH =
+            new ConfigKey<>(new String[] {"inventory", "ninth"}, new ConfigIntValue(Input.Keys.NUM_9));
+    public static final ConfigKey<Integer> INVENTORY_TENTH =
+            new ConfigKey<>(new String[] {"inventory", "tenth"}, new ConfigIntValue(Input.Keys.NUM_0));
+
 
 }
