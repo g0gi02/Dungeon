@@ -55,14 +55,15 @@ public class WalkToEndTile implements IIdleAI {
             frameCounter++;
             return;
         }
-        if (currentPath == null)
-        currentPath = atEndTile ? getPathAroundTile(entity) : getPathToEndTile(entity);
+        if (currentPath == null || currentPath.getCount() == 0) {
+            currentPath = atEndTile ? getPathAroundTile(entity) : getPathToEndTile(entity);
+        }
 
-        if (currentPath != null) {
+        if (currentPath != null && currentPath.getCount() != 0) {
             AITools.move(entity, currentPath);
         }
 
-        if (AITools.pathFinished(entity, currentPath)) {
+        if (currentPath != null && currentPath.getCount() != 0 && AITools.pathFinished(entity, currentPath)) {
             currentPath = null;
             atEndTile = !atEndTile;
             frameCounter = 0;

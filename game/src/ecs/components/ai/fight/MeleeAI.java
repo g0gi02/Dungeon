@@ -31,12 +31,12 @@ public class MeleeAI implements IFightAI {
         if (AITools.playerInRange(entity, attackRange)) {
             fightSkill.execute(entity);
         } else {
-            if (timeSinceLastUpdate >= delay) {
+            if (timeSinceLastUpdate >= delay || path == null || path.getCount() == 0) {
                 path = AITools.calculatePathToHero(entity);
                 timeSinceLastUpdate = -1;
             }
             timeSinceLastUpdate++;
-            if(path != null) AITools.move(entity, path);
+            if(path.getCount() != 0) AITools.move(entity, path);
         }
     }
 }

@@ -443,8 +443,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 .forEach(Ghost::setupHitboxComponent);
             gameLogger.info("Game saved successfully.");
         } catch (IOException ex) {
-            ex.printStackTrace();
             gameLogger.severe("Game could not be saved.");
+            ex.printStackTrace();
         }
         togglePause();
     }
@@ -466,23 +466,26 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             Hero newHero = (Hero) ois.readObject();
             Set<Entity> newEntities = (HashSet<Entity>) ois.readObject();
             ois.close();
-            // setup transient values for read objects
-            newHero.setupLogger();
-            for (Entity entity : newEntities) {
-                entity.setupLogger();
-                entity.setupAIComponent();
-            }
             // add objects to game
             dragonExists = newDragonExists;
             levelCounter = newLevelCounter;
             hero = newHero;
+            hero.setupLogger();
             // remove old entities before adding new ones
-            entities.clear();
-            entities.addAll(newEntities);
-            levelAPI.loadLevel(newCurrentLevel);
+            for (Entity entity : newEntities) {
+                if (entity instanceof Ghost) ((Ghost) entity).setupHitboxComponent();
+                entity.setupLogger();
+                entity.setupAIComponent();
+            }
+            entitiesToRemove.addAll(entities);
+            entitiesToAdd.addAll(newEntities);
+            // set the level
+            currentLevel = newCurrentLevel;
+            levelAPI.setCurrentLevel(newCurrentLevel);
             gameLogger.info("Game loaded successfully.");
         } catch (IOException | ClassNotFoundException ex) {
             gameLogger.severe("File: "+saveFile+" could not be loaded.");
+            ex.printStackTrace();
         }
         togglePause();
     }

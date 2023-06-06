@@ -98,7 +98,7 @@ public class PatrouilleWalk implements IIdleAI {
                                 .orElseThrow(
                                         () -> new MissingComponentException("PositionComponent"));
 
-        if (currentPath != null && !AITools.pathFinished(entity, currentPath)) {
+        if (currentPath != null && currentPath.getCount() != 0 && !AITools.pathFinished(entity, currentPath)) {
             if (AITools.pathLeft(entity, currentPath)) {
                 currentPath =
                         AITools.calculatePath(
@@ -109,7 +109,7 @@ public class PatrouilleWalk implements IIdleAI {
             return;
         }
 
-        if (currentPath != null && AITools.pathFinished(entity, currentPath)) {
+        if (currentPath != null && currentPath.getCount() != 0 && AITools.pathFinished(entity, currentPath)) {
             frameCounter = 0;
             currentPath = null;
             return;

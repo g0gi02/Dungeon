@@ -27,16 +27,16 @@ public class CollideAI implements IFightAI {
         if (AITools.playerInRange(entity, rushRange)) {
             // the faster pathing once a certain range is reached
             path = AITools.calculatePathToHero(entity);
-            AITools.move(entity, path);
+            if (path.getCount() != 0) AITools.move(entity, path);
             timeSinceLastUpdate = delay;
         } else {
             // check if new pathing update
-            if (timeSinceLastUpdate >= delay) {
+            if (timeSinceLastUpdate >= delay || path == null || path.getCount() == 0) {
                 path = AITools.calculatePathToHero(entity);
                 timeSinceLastUpdate = -1;
             }
             timeSinceLastUpdate++;
-            AITools.move(entity, path);
+            if(path.getCount() != 0) AITools.move(entity, path);
         }
     }
 }
