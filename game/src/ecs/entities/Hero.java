@@ -70,9 +70,11 @@ public class Hero extends Entity {
         setupManaComponent();
         setupHealthComponent();
 
+        new InventoryComponent(this, 4);
+
         unlockFourthSkill();
         unlockFifthSkill();
-        unlockMeleeSkill();
+        // unlockMeleeSkill();
     }
 
     private void setupHealthComponent() {
@@ -149,9 +151,19 @@ public class Hero extends Entity {
         this.mc.setManaRegenRate(this.manaRegenRate);
     }
 
-    private void unlockMeleeSkill() {
+    // Melee skill
+    public void unlockMeleeSkill() {
         this.pc.setMeleeSkill(meleeSkill);
         this.sc.addSkill(meleeSkill);
+    }
+
+    public void lockMeleeSkill() {
+        this.pc.setMeleeSkill(null);
+        this.sc.removeSkill(meleeSkill);
+    }
+
+    public Skill getMeleeSkill() {
+        return this.meleeSkill;
     }
     
     // Fireball skill

@@ -21,6 +21,8 @@ public class ItemData {
     private String itemName;
     private String description;
 
+    
+
     private IOnCollect onCollect;
     private IOnDrop onDrop;
     // active
