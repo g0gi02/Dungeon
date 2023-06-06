@@ -39,6 +39,7 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
         this.knockback = 0f;
     }
 
+
     /**
      * creates a damage-dealing projectile
      *
