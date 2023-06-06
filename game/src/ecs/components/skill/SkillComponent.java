@@ -48,4 +48,24 @@ public class SkillComponent extends Component {
     public void reduceAllCoolDowns() {
         for (Skill skill : skillSet) skill.reduceCoolDown();
     }
+
+    public void reduceCoolDown(Class skillClass, int newCurrentCoolDown) {
+        for (Skill skill : skillSet) {
+            if (skill.getSkillFunction() instanceof BoomerangSkill) {
+                System.out.println("Reducing cool down of " + skillClass.getName());
+                skill.setCurrentCoolDown(newCurrentCoolDown);
+                break;
+            }
+        }
+    }
+
+    public void reduceCoolDown(Class skillClass) {
+        for (Skill skill : skillSet) {
+            if (skill.getSkillFunction().getClass().equals(skillClass)) {
+                System.out.println("Reducing cool down of " + skillClass.getName());
+                skill.reduceCoolDown();
+                break;
+            }
+        }
+    }
 }

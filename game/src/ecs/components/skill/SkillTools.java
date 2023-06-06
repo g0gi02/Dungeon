@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import ecs.components.PositionComponent;
+import ecs.components.VelocityComponent;
 import starter.Game;
 import tools.Point;
 import ecs.entities.Hero;
@@ -53,6 +54,81 @@ public class SkillTools {
         float velocityX = dx / distance * speed;
         float velocityY = dy / distance * speed;
         return new Point(velocityX, velocityY);
+    }
+
+    /**
+     * causes knockback to target entity
+     * @param cause
+     * @param target
+     */
+    public static void causeKnockBack(Entity cause, Entity target) {
+        // The the velocity component of the target entity
+        // The Method getUnitDirectionalVector returns a vector between two points, as a point.
+        // That vector has the right direction for the knockback and
+        // is then used to set the velocity of the target entity
+        target.getComponent(VelocityComponent.class)
+        .ifPresent(vlc -> {
+                ((VelocityComponent) vlc).setCurrentXVelocity(
+                    // Set the x velocity to the x value of the vector between the target and the cause
+                        Point.getUnitDirectionalVector(
+                                ((PositionComponent) target
+                                        .getComponent(PositionComponent.class)
+                                        .get())
+                                        .getPosition(),
+                                ((ProjectileComponent) cause
+                                        .getComponent(ProjectileComponent.class)
+                                        .get())
+                                        .getStartPosition()).x
+                                );
+                ((VelocityComponent) vlc).setCurrentYVelocity(
+                    // Set the y velocity to the y value of the vector between the target and the cause
+                        Point.getUnitDirectionalVector(
+                                ((PositionComponent) target
+                                        .getComponent(PositionComponent.class)
+                                        .get())
+                                        .getPosition(),
+                                ((ProjectileComponent) cause
+                                        .getComponent(ProjectileComponent.class)
+                                        .get())
+                                        .getStartPosition()).y
+                                );
+        });
+    }
+
+    public static void causeKnockBack(Entity cause, Entity target, float knockbackFactor) {
+        // The the velocity component of the target entity
+        // The Method getUnitDirectionalVector returns a vector between two points, as a point.
+        // That vector has the right direction for the knockback and
+        // is then used to set the velocity of the target entity
+        target.getComponent(VelocityComponent.class)
+        .ifPresent(vlc -> {
+                ((VelocityComponent) vlc).setCurrentXVelocity(
+                    // Set the x velocity to the x value of the vector between the target and the cause
+                        Point.getUnitDirectionalVector(
+                                ((PositionComponent) target
+                                        .getComponent(PositionComponent.class)
+                                        .get())
+                                        .getPosition(),
+                                ((ProjectileComponent) cause
+                                        .getComponent(ProjectileComponent.class)
+                                        .get())
+                                        .getStartPosition()).x
+                                // Multiply the x value of the vector by the knockbackFactor
+                                * knockbackFactor);
+                ((VelocityComponent) vlc).setCurrentYVelocity(
+                    // Set the y velocity to the y value of the vector between the target and the cause
+                        Point.getUnitDirectionalVector(
+                                ((PositionComponent) target
+                                        .getComponent(PositionComponent.class)
+                                        .get())
+                                        .getPosition(),
+                                ((ProjectileComponent) cause
+                                        .getComponent(ProjectileComponent.class)
+                                        .get())
+                                        .getStartPosition()).y
+                                // Multiply the y value of the vector by the knockbackFactor
+                                * knockbackFactor);
+        });
     }
 
     /**

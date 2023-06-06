@@ -87,4 +87,12 @@ public class Skill {
     public void reduceCoolDown() {
         currentCoolDownInFrames = Math.max(0, --currentCoolDownInFrames);
     }
+
+    public void setCurrentCoolDown(int currentCoolDownInFrames) {
+        this.currentCoolDownInFrames = currentCoolDownInFrames;
+    }
+
+    public ISkillFunction getSkillFunction() {
+        return skillFunction;
+    }
 }

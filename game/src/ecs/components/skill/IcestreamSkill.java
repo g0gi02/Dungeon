@@ -10,7 +10,7 @@ public class IcestreamSkill extends DamageProjectileSkill{
             "skills/icestream/",
             0.1f,
             new Damage(1, DamageType.ICE, null),
-            new Point(10, 10),
+            new Point(3, 3),
             targetSelection,
             5f);
     }

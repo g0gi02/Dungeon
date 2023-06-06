@@ -98,8 +98,8 @@ public class DragonP1 extends BossMonster{
 
     // HealthComponents onDeath function: create a dragon in its second phase
     private void setupHealthComponent() {
-        Animation monsterHit = AnimationBuilder.buildAnimation("animation");
-        Animation monsterDeath = AnimationBuilder.buildAnimation("animation");
+        Animation monsterHit = AnimationBuilder.buildAnimation("character/monster/dragon1/idleLeft/");
+        Animation monsterDeath = AnimationBuilder.buildAnimation("character/monster/dragon2/idleLeft/");
         new HealthComponent(this, MAX_HEALTH,
             a -> Game.addEntity(new DragonP2(this.getComponent(PositionComponent.class).map(PositionComponent.class::cast).get().getPosition())),
             monsterHit, monsterDeath);
