@@ -20,6 +20,9 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
     private int damageAmmount = 10;
     private float range = 5;
 
+    /**
+     * creates a new BombItem
+     */
     public BombItem() {
         super();
         setupItemComponent();
@@ -29,6 +32,11 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
         bombItemLogger.info("BombItem created");
     }
 
+    /**
+     * creates a new BombItem with a given position and itemData
+     * @param itemData
+     * @param point
+     */
     public BombItem(ItemData itemData, Point point) {
         super();
         new ItemComponent(this, itemData);
@@ -58,6 +66,10 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
                 });
     }
 
+    /**
+     * Sets up the ItemComponent
+     * and configures the ItemData
+     */
     @Override
     protected void setupItemComponent() {
         ItemData itemData = new ItemData(
@@ -143,6 +155,7 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
 
     /**
      * This Methode is executing the ability of the item
+     * The bomb explodes and deals damage to all entities in range
      * @param entity
      */
     private void explode(Entity entity) {

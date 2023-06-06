@@ -16,6 +16,9 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
     private ItemComponent itemComponent;
     private int size = 3;
 
+    /**
+     * creates a new BackpackItem
+     */
     public BackpackItem() {
         super();
         setupItemComponent();
@@ -25,6 +28,11 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
         backpackItemLogger.info("BackpackItem created");
     }
 
+    /**
+     * creates a new BackpackItem with a given position and itemData
+     * @param itemData
+     * @param point
+     */
     public BackpackItem(ItemData itemData, Point point) {
         super();
         new ItemComponent(this, itemData);
@@ -54,6 +62,10 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
                 });
     }
 
+    /**
+     * Sets up the ItemComponent
+     * and configures the ItemData
+     */
     @Override
     protected void setupItemComponent() {
         ItemData itemData = new ItemData(
@@ -133,6 +145,7 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
 
     /**
      * This Methode is executing the ability of the item
+     * the backpack increases the inventory size by 3
      * @param entity
      */
     private void increaseInventorySize(Entity entity) {

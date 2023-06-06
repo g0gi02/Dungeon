@@ -15,6 +15,9 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
     private Logger healthPotionLogger = Logger.getLogger("HealthPotion");
     private ItemComponent itemComponent;
 
+    /**
+     * creates a new HealthPotion
+     */
     public HealthPotion() {
         super();
         setupItemComponent();
@@ -24,6 +27,11 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
         healthPotionLogger.info("HealthPotion created");
     }
 
+    /**
+     * creates a new HealthPotion with a given position and itemData
+     * @param itemData
+     * @param point
+     */
     public HealthPotion(ItemData itemData, Point point) {
         super();
         new ItemComponent(this, itemData);
@@ -53,6 +61,10 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
                 });
     }
 
+    /**
+     * Sets up the ItemComponent
+     * and configures the ItemData
+     */
     @Override
     protected void setupItemComponent() {
         ItemData itemData = new ItemData(
@@ -138,6 +150,7 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
 
     /**
      * This Methode is executing the ability of the item
+     * The potion heals the entity to full health
      * @param entity
      */
     private void heal(Entity entity) {
