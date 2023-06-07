@@ -1,10 +1,10 @@
 package ecs.Quests;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-
-public abstract class Quest {
+public abstract class Quest implements Serializable {
     public String questname;
     public String progressionMessage;
     public String description;

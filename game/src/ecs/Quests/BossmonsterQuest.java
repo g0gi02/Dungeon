@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import java.util.Optional;
 
 public class BossmonsterQuest extends Quest  {
-    private Logger bossmonsterQuestLogger = Logger.getLogger("BossmonsterQuest");
+    private transient Logger bossmonsterQuestLogger;
     public int startHealth;
     public int endHealth;
 
@@ -19,6 +19,7 @@ public class BossmonsterQuest extends Quest  {
      */
     public  BossmonsterQuest(String questname, String description){
         super(questname, description);
+        setupLogger();
         progressionMessage = "Besiege das Bossmonster ohne Lebenspunkte zu verlieren";
     }
 
@@ -63,7 +64,11 @@ public class BossmonsterQuest extends Quest  {
         HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();
         currentHeroHealth.setMaximalHealthpoints(currentHeroHealth.getMaximalHealthpoints() + 10);
         currentHeroHealth.setCurrentHealthpoints(currentHeroHealth.getCurrentHealthpoints() + 10);
+        if (bossmonsterQuestLogger == null) setupLogger();
         bossmonsterQuestLogger.info("BossmonsterQuest reward");
     }
 
+    private void setupLogger() {
+        bossmonsterQuestLogger = Logger.getLogger("BossmonsterQuest");
+    }
 }
