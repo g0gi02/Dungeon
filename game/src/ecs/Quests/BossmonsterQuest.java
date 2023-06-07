@@ -4,11 +4,11 @@ import ecs.components.Component;
 import ecs.components.HealthComponent;
 import ecs.entities.Hero;
 import starter.Game;
-
+import java.util.logging.Logger;
 import java.util.Optional;
 
 public class BossmonsterQuest extends Quest  {
-    Logger bossmonsterQuestLogger = Logger.getLogger(BossmonsterQuest.class.getName());
+    private Logger bossmonsterQuestLogger = Logger.getLogger("BossmonsterQuest");
     public int startHealth;
     public int endHealth;
 

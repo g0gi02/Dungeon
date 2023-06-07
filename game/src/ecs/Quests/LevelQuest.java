@@ -5,9 +5,11 @@ import ecs.components.HealthComponent;
 import starter.Game;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.logging.Logger;
+
 
 public class LevelQuest extends Quest {
-    Logger levelQuestLogger = Logger.getLogger(LevelQuest.class.getName());
+    private Logger levelQuestLogger = Logger.getLogger("LevelQuest");
     private final int levelsNeeded = 5;
 
     /**

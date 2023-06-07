@@ -322,8 +322,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             dragonExists = true;
         } else {
             if (levelCounter % 2 == 0) {
-                Ghost ghost = Ghost.createNewGhost();
-                Gravestone.createNewGravestone(ghost);
+                // Ghost ghost = Ghost.createNewGhost();
+                // Gravestone.createNewGravestone(ghost);
             }
             questmaster = Questmaster.createNewQuestmaster();
             //createQuest();

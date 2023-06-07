@@ -1,6 +1,8 @@
 package ecs.Quests;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
+
 
 public abstract class Quest {
     public String questname;
