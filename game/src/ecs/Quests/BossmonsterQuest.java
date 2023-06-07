@@ -12,17 +12,30 @@ public class BossmonsterQuest extends Quest  {
     public int startHealth;
     public int endHealth;
 
+    /**
+     * Creates a new BossmonsterQuest
+     * @param questname
+     * @param description
+     */
     public  BossmonsterQuest(String questname, String description){
         super(questname, description);
         progressionMessage = "Besiege das Bossmonster ohne Lebenspunkte zu verlieren";
     }
 
+    /**
+     * Tracks the progress of the quest
+     */
     @Override
     public void trackProgress(){
         progressionMessage = "fight without fear";
     }
 
 
+    /**
+     * Checks if the quest is finished
+     * Is finished if the hero has more or equal healthpoints after the bossmonsterfight than before
+     * @return true if the quest is finished, false if not
+     */
     @Override
     public boolean isFinished(){
         Optional<Component> health = Game.getHero().get().getComponent(HealthComponent.class);
@@ -40,6 +53,10 @@ public class BossmonsterQuest extends Quest  {
 
     }
 
+    /**
+     * Reward for the BossmonsterQuest
+     * Increases the maximal and current healthpoints of the hero by 10
+     */
     @Override
     public void giveReward(){
         Optional<Component> heroHealth = Game.getHero().get().getComponent(HealthComponent.class);

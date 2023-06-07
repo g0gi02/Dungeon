@@ -10,16 +10,29 @@ public class LevelQuest extends Quest {
     Logger levelQuestLogger = Logger.getLogger(LevelQuest.class.getName());
     private final int levelsNeeded = 5;
 
+    /**
+     * Creates a new LevelQuest
+     * @param questname
+     * @param description
+     */
     public LevelQuest(String questname, String description) {
         super(questname,description);
         progressionMessage = " Es wurden null von " + levelsNeeded + "abgeschlossen";
     }
 
+    /**
+     * Tracks the progress of the quest
+     */
     @Override
     public void trackProgress(){
         progressionMessage = "Es wurden " + Game.getCurrentLevelCounter() + " von " + levelsNeeded  + " abgeschlossen";
     }
 
+    /**
+     * Checks if the quest is finished
+     * Is finished once the hero has completed 5 levels
+     * @return true if the quest is finished, false if not
+     */
     @Override
     public boolean isFinished(){
         if (Game.getCurrentLevelCounter() >= levelsNeeded + 1){
@@ -29,7 +42,10 @@ public class LevelQuest extends Quest {
         return false;
     }
 
-
+    /**
+     * Reward for the LevelQuest
+     * Increases the current healthpoints of the hero by 10
+     */
     @Override
     public void giveReward() {
         Optional<Component> heroHealth = Game.getHero().get().getComponent(HealthComponent.class);

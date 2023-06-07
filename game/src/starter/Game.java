@@ -249,6 +249,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
     }
 
+    /**
+     * Manages the Questmaster input and the Questmenu Input.
+     */
     private void manageQuestMenus() {
         if (questmaster.hasInteracted && !hasOngoingQuest) {
             if (!hasShownQuestMenuThisLevel) {
@@ -278,7 +281,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
     }
 
-
+    /**
+     * Called when the Quest Menu is opened.
+     * Opens a hud with the Quest information
+     */
     public static void toggleActiveQuestMenu() {
         paused = !paused;
         if (systems != null) {
@@ -290,7 +296,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
     }
 
-
+    /**
+     * Called after a Quest has been accepted.
+     * Creates a new Random Quest
+     */
     private void createQuest() {
         if (!hasOngoingQuest) {
             if (Math.random() > 0.5) {
