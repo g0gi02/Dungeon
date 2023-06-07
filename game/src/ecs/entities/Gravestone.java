@@ -19,6 +19,11 @@ public class Gravestone extends NPC {
 
     private Ghost ghost;
 
+    /**
+     * basic gravestone constructor from NPC
+     * @param position
+     * @param ghost
+     */
     public Gravestone(Point position, Ghost ghost) {
         super(
             X_SPEED,

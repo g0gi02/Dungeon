@@ -34,6 +34,10 @@ public class Ghost extends NPC {
     private static final String PATH_TO_RUN_LEFT = "Ghost/runLeft";
     private static final String PATH_TO_RUN_RIGHT = "Ghost/runRight";
 
+
+    /**
+     basic Ghost constuctor from NPC class
+     **/
     public Ghost(Point position) {
         super(
             X_SPEED,
