@@ -4,8 +4,10 @@ import ecs.components.Component;
 import ecs.components.HealthComponent;
 import starter.Game;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class LevelQuest extends Quest {
+    Logger levelQuestLogger = Logger.getLogger(LevelQuest.class.getName());
     private final int levelsNeeded = 5;
 
     public LevelQuest(String questname, String description) {
@@ -33,6 +35,6 @@ public class LevelQuest extends Quest {
         Optional<Component> heroHealth = Game.getHero().get().getComponent(HealthComponent.class);
         HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();
         currentHeroHealth.setCurrentHealthpoints(currentHeroHealth.getCurrentHealthpoints() + 10);
-        System.out.println("LevelQuest reward, heal 10 HP! ");
+        levelQuestLogger.info("LevelQuest reward, heal 10 HP!");
     }
 }

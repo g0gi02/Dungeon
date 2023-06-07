@@ -8,7 +8,7 @@ import starter.Game;
 import java.util.Optional;
 
 public class BossmonsterQuest extends Quest  {
-
+    Logger bossmonsterQuestLogger = Logger.getLogger(BossmonsterQuest.class.getName());
     public int startHealth;
     public int endHealth;
 
@@ -46,7 +46,7 @@ public class BossmonsterQuest extends Quest  {
         HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();
         currentHeroHealth.setMaximalHealthpoints(currentHeroHealth.getMaximalHealthpoints() + 10);
         currentHeroHealth.setCurrentHealthpoints(currentHeroHealth.getCurrentHealthpoints() + 10);
-        System.out.println("BossmonsterQuest reward ");
+        bossmonsterQuestLogger.info("BossmonsterQuest reward");
     }
 
 }

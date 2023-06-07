@@ -232,7 +232,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private void manageGameOverMenuInputs() {
         //check Inputs while gameOverMenu is active
         if (Gdx.input.isKeyPressed(Input.Keys.K)) {
-            System.out.println("game has endet");
+            gameLogger.info("game has endet");
             Gdx.app.exit();
             //remove all Entities and place a new hero
         } else if (Gdx.input.isKeyPressed(Input.Keys.L)) {
@@ -243,7 +243,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 Game.removeEntity(entityIterator.next());
             }
             Game.setHero(hero);
-            System.out.println("restart");
+            levelCounter = 0;
+            gameLogger.info("restart");
             gameOverMenu.hideEndMenu();
         }
     }
@@ -258,8 +259,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.H) && questMenu.isMenuOpen) {
-                System.out.println("Hero accepted the Quest");
-                //hasOngoingQuest = true;
+                gameLogger.info("Hero accepted the Quest");
                 questMenu.isMenuOpen = false;
                 questMenu.hideQuestMenu();
                 systems.forEach(ECS_System::toggleRun);
@@ -267,7 +267,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
 
             } else if (Gdx.input.isKeyPressed(Input.Keys.J) && questMenu.isMenuOpen) {
-                System.out.println("Hero rejected the Quest");
+                gameLogger.info("Hero rejected the Quest");
                 questMenu.hideQuestMenu();
                 questMenu.isMenuOpen = false;
                 systems.forEach(ECS_System::toggleRun);
@@ -275,7 +275,6 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.G) && hasOngoingQuest) {
             toggleActiveQuestMenu();
-            System.out.println(hasOngoingQuest);
         }
     }
 
@@ -309,7 +308,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public void onLevelLoad() {
         currentLevel = levelAPI.getCurrentLevel();
         levelCounter++;
-        System.out.println("Du bist in Level: " + levelCounter);
+        gameLogger.info("Level " + levelCounter + " loaded");
         hasShownQuestMenuThisLevel = false;
 
         if (levelCounter % 10 == 0) {
