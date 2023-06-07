@@ -13,6 +13,7 @@ import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
 import ecs.components.*;
+import ecs.components.ai.AIComponent;
 import ecs.entities.*;
 import ecs.entities.Imp;
 import ecs.systems.*;
