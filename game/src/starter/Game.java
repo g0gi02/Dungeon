@@ -112,7 +112,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public static QuestMenu<Actor> questMenu;
     public static ActiveQuestMenu<Actor> activeQuestMenu;
 
-    public boolean hasOngoingQuest = false;
+    private static boolean hasOngoingQuest = false;
     private static Entity hero;
     private Logger gameLogger;
     public Questmaster questmaster;
@@ -130,7 +130,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         DesktopLauncher.run(new Game());
     }
 
-    public static int getCurrentLevel() {
+    public static int getCurrentLevelCounter() {
         return levelCounter;
     }
 
@@ -191,7 +191,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(questMenu);
         hero = new Hero();
 
-        manageQuestMenus();
+        //manageQuestMenus();
 
 
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
@@ -210,7 +210,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         if (gameOverMenu.isMenuOpen) manageGameOverMenuInputs();
 
 
-        //manageQuestMenus();
+        manageQuestMenus();
 
 
         // TODO: remove this
@@ -259,10 +259,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
             if (Gdx.input.isKeyPressed(Input.Keys.H) && questMenu.isMenuOpen) {
                 System.out.println("Hero accepted the Quest");
-                hasOngoingQuest = true;
+                //hasOngoingQuest = true;
                 questMenu.isMenuOpen = false;
                 questMenu.hideQuestMenu();
                 systems.forEach(ECS_System::toggleRun);
+                createQuest();
+
 
             } else if (Gdx.input.isKeyPressed(Input.Keys.J) && questMenu.isMenuOpen) {
                 System.out.println("Hero rejected the Quest");
@@ -273,6 +275,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.G) && hasOngoingQuest) {
             toggleActiveQuestMenu();
+            System.out.println(hasOngoingQuest);
         }
     }
 
@@ -290,17 +293,16 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
 
     private void createQuest() {
-        if ( levelCounter >= 0) {    //questmaster.hasInteracted && !hasOngoingQuest &&
+        if (!hasOngoingQuest) {
             if (Math.random() > 0.5) {
                 new LevelQuest("Levelmaster", " complete 5 more Levels ");
-                activeQuestMenu.setScreenTextQuest("  Levelmaster", "  complete 5 more Levels ");
-                System.out.println("dgjfkrzkrzkedtjrtej");
+                activeQuestMenu.setScreenTextQuest("  Levelmaster", "  complete 5 \n more Levels ");
             } else {
                 new BossmonsterQuest("Flawless", "defeat the Dragon without even a tiny scratch!");
-                activeQuestMenu.setScreenTextQuest("  Flawless", "defeat the Dragon without \n even a tiny scratch!");
-                System.out.println("dgjfkrzkrzkedtjrtej");
+                activeQuestMenu.setScreenTextQuest("  Flawless", "defeat the Dragon \n without  even a  \n tiny scratch!");
             }
         }
+        hasOngoingQuest = true;
     }
 
     @Override
@@ -319,7 +321,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 Gravestone.createNewGravestone(ghost);
             }
             questmaster = Questmaster.createNewQuestmaster();
-            createQuest();
+            //createQuest();
 
             Mimic_Chest_Trap.createNewMimicChest();
             SlowTrap.createSlowTrap();
@@ -487,6 +489,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         // https://stackoverflow.com/questions/52011592/libgdx-set-ortho-camera
     }
 
+    public static void setHasOngoingQuest(boolean value) {
+        hasOngoingQuest = value;
+    }
+
+
+
     private void createSystems() {
         new VelocitySystem();
         new DrawSystem(painter);
@@ -504,4 +512,6 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public static void setDragonExistsFalse() {
         dragonExists = false;
     }
+
+
 }

@@ -15,12 +15,13 @@ public class LevelQuest extends Quest {
 
     @Override
     public void trackProgress(){
-        progressionMessage = "Es wurden " + Game.getCurrentLevel() + " von " + levelsNeeded  + " abgeschlossen";
+        progressionMessage = "Es wurden " + Game.getCurrentLevelCounter() + " von " + levelsNeeded  + " abgeschlossen";
     }
 
     @Override
     public boolean isFinished(){
-        if (Game.getCurrentLevel() >= levelsNeeded + 1){
+        if (Game.getCurrentLevelCounter() >= levelsNeeded + 1){
+            Game.setHasOngoingQuest(false);
             return true;
         }
         return false;
@@ -32,6 +33,6 @@ public class LevelQuest extends Quest {
         Optional<Component> heroHealth = Game.getHero().get().getComponent(HealthComponent.class);
         HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();
         currentHeroHealth.setCurrentHealthpoints(currentHeroHealth.getCurrentHealthpoints() + 10);
-        System.out.println("LevelQuest reward " + Game.getCurrentLevel());
+        System.out.println("LevelQuest reward, heal 10 HP! ");
     }
 }
