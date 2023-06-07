@@ -27,10 +27,10 @@ public class BossmonsterQuest extends Quest  {
     public boolean isFinished(){
         Optional<Component> health = Game.getHero().get().getComponent(HealthComponent.class);
         HealthComponent currentHeroHealth = (HealthComponent) health.orElseThrow();
-        if (Game.getCurrentLevel() % 30 == 0){
+        if (Game.getCurrentLevelCounter() % 10 == 0){
             startHealth = currentHeroHealth.getCurrentHealthpoints();
         }
-        if (Game.getCurrentLevel() % 31 == 0){
+        if (Game.getCurrentLevelCounter() % 10 == 1){
             endHealth = currentHeroHealth.getCurrentHealthpoints();
         }
         if ((endHealth >= startHealth)){

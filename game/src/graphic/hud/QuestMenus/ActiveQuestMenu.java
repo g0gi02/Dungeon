@@ -19,12 +19,13 @@ public class ActiveQuestMenu<T extends Actor> extends ScreenController<T> {
     public boolean isMenuOpen = false;
     private String activeQuestName = " no Quests yet";
     private String activeQuestDescription = " ";
+    private ScreenText screenText;
 
 
     //specifies how the ActiveQuestMenu looks
     public ActiveQuestMenu(SpriteBatch batch) {
         super(batch);
-        ScreenText screenText =
+        screenText =
             new ScreenText(
                 " active Quest : \n" + activeQuestName + "\n" + activeQuestDescription,
                 new Point(0, 0),
@@ -45,6 +46,7 @@ public class ActiveQuestMenu<T extends Actor> extends ScreenController<T> {
     public void setScreenTextQuest(String name, String description) {
         activeQuestName = name;
         activeQuestDescription = description;
+        this.screenText.setText( "active Quest : \n" + activeQuestName + "\n" + activeQuestDescription);
     }
 
     /**
