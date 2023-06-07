@@ -46,7 +46,7 @@ public class PlayerSystem extends ECS_System {
             ksd.pc.getSkillSlot2().ifPresent(skill -> skill.execute(ksd.e));
         else if (Gdx.input.isKeyPressed(KeyboardConfig.THIRD_SKILL.get()))
             ksd.pc.getSkillSlot3().ifPresent(skill -> skill.execute(ksd.e));
-            else if (Gdx.input.isKeyPressed(KeyboardConfig.FOURTH_SKILL.get()))
+        else if (Gdx.input.isKeyPressed(KeyboardConfig.FOURTH_SKILL.get()))
             ksd.pc.getSkillSlot4().ifPresent(skill -> skill.execute(ksd.e));
         else if (Gdx.input.isKeyPressed(KeyboardConfig.FIFTH_SKILL.get()))
             ksd.pc.getSkillSlot5().ifPresent(skill -> skill.execute(ksd.e));

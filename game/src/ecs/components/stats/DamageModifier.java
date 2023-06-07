@@ -1,10 +1,12 @@
 package ecs.components.stats;
 
 import ecs.damage.DamageType;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DamageModifier {
+public class DamageModifier implements Serializable {
 
     private final Map<DamageType, Float> damageMultipliers = new HashMap<>();
 

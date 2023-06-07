@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
-    private Logger healthPotionLogger = Logger.getLogger("HealthPotion");
+    private transient Logger healthPotionLogger;
     private ItemComponent itemComponent;
 
     /**
@@ -20,6 +20,7 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     public HealthPotion() {
         super();
+        setupLogger();
         setupItemComponent();
         setupAnimationComponent();
         setupPositionComponent();
@@ -34,6 +35,7 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     public HealthPotion(ItemData itemData, Point point) {
         super();
+        setupLogger();
         new ItemComponent(this, itemData);
         new PositionComponent(this, point);
         setupHitBoxComponent();
@@ -88,6 +90,7 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onCollect(Entity WorldItemEntity, Entity whoCollides) {
+        if (healthPotionLogger == null) setupLogger();
         healthPotionLogger.info(WorldItemEntity.toString() + " collected by " + whoCollides.toString());
         if (!Game.getHero().isPresent())
             return;
@@ -114,6 +117,7 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onUse(Entity e, ItemData item) {
+        if (healthPotionLogger == null) setupLogger();
         healthPotionLogger.info(e.toString() + " used " + item.getItemName());
         if (!e.getComponent(InventoryComponent.class).isPresent())
             return;
@@ -138,6 +142,7 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onDrop(Entity user, ItemData which, Point position) {
+        if (healthPotionLogger == null) setupLogger();
         healthPotionLogger.info(user.toString() + " dropped " + which.getItemName() + " at " + position.toString());
         Game.addEntity(new HealthPotion(which, position));
         if (!user.getComponent(InventoryComponent.class).isPresent())
@@ -154,11 +159,16 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
      * @param entity
      */
     private void heal(Entity entity) {
+        if (healthPotionLogger == null) setupLogger();
         healthPotionLogger.info(entity.toString() + " healed by " + itemComponent.getItemData().getItemName());
         if (!entity.getComponent(HealthComponent.class).isPresent())
             return;
         HealthComponent hc = (HealthComponent) entity.getComponent(HealthComponent.class).get();
         hc.setCurrentHealthpoints(hc.getMaximalHealthpoints());
     }
-    
+
+    @Override
+    public void setupLogger() {
+        healthPotionLogger = Logger.getLogger("HealthPotion");
+    }
 }

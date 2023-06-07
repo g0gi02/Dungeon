@@ -2,8 +2,10 @@ package ecs.items;
 
 import ecs.entities.Entity;
 
+import java.io.Serializable;
+
 /** Interface for ItemUsable. Implements the callback for when the item is used. */
-public interface IOnUse {
+public interface IOnUse extends Serializable {
 
     /**
      * Called when the item is used.

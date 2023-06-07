@@ -53,6 +53,4 @@ public class KeyboardConfig {
             new ConfigKey<>(new String[] {"inventory", "ninth"}, new ConfigIntValue(Input.Keys.NUM_9));
     public static final ConfigKey<Integer> INVENTORY_TENTH =
             new ConfigKey<>(new String[] {"inventory", "tenth"}, new ConfigIntValue(Input.Keys.NUM_0));
-
-
 }

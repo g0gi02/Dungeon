@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
-    private Logger backpackItemLogger = Logger.getLogger("BackpackItem");
+    private transient Logger backpackItemLogger;
     private ItemComponent itemComponent;
     private int size = 3;
 
@@ -21,6 +21,7 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     public BackpackItem() {
         super();
+        setupLogger();
         setupItemComponent();
         setupAnimationComponent();
         setupPositionComponent();
@@ -35,6 +36,7 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     public BackpackItem(ItemData itemData, Point point) {
         super();
+        setupLogger();
         new ItemComponent(this, itemData);
         new PositionComponent(this, point);
         setupHitBoxComponent();
@@ -89,6 +91,7 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onCollect(Entity WorldItemEntity, Entity whoCollides) {
+        if (backpackItemLogger == null) setupLogger();
         backpackItemLogger.info(WorldItemEntity.toString() + " collected by " + whoCollides.toString());
         if (!Game.getHero().isPresent())
             return;
@@ -121,6 +124,7 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onUse(Entity e, ItemData item) {
+        if (backpackItemLogger == null) setupLogger();
         backpackItemLogger.info(e.toString() + " used " + item.getItemName());
     }
 
@@ -132,6 +136,7 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
      */
     @Override
     public void onDrop(Entity user, ItemData which, Point position) {
+        if (backpackItemLogger == null) setupLogger();
         backpackItemLogger.info(user.toString() + " dropped " + which.getItemName() + " at " + position.toString());
         Game.addEntity(new BackpackItem(which, position));
         if (!user.getComponent(InventoryComponent.class).isPresent())
@@ -165,5 +170,10 @@ public class BackpackItem extends Item implements IOnUse, IOnCollect, IOnDrop {
             return;
         InventoryComponent ic = (InventoryComponent) entity.getComponent(InventoryComponent.class).get();
         ic.setMaxSize(ic.getMaxSize() - size);
+    }
+
+    @Override
+    public void setupLogger() {
+        backpackItemLogger = Logger.getLogger("BackpackItem");
     }
 }
