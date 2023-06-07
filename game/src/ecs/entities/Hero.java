@@ -1,6 +1,7 @@
 package ecs.entities;
 
 import dslToGame.AnimationBuilder;
+import ecs.Quests.LevelQuest;
 import ecs.components.*;
 import ecs.components.AnimationComponent;
 import ecs.components.PositionComponent;
@@ -153,7 +154,7 @@ public class Hero extends Entity {
         this.pc.setMeleeSkill(meleeSkill);
         this.sc.addSkill(meleeSkill);
     }
-    
+
     // Fireball skill
     private void unlockFirstSkill() {
         this.pc.setSkillSlot1(firstSkill);

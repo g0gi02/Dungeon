@@ -12,6 +12,8 @@ import configuration.Configuration;
 import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
+import ecs.Quests.BossmonsterQuest;
+import ecs.Quests.LevelQuest;
 import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
@@ -22,8 +24,10 @@ import ecs.systems.*;
 
 import graphic.DungeonCamera;
 import graphic.Painter;
+import graphic.hud.QuestMenus.ActiveQuestMenu;
 import graphic.hud.GameOverMenu;
 import graphic.hud.PauseMenu;
+import graphic.hud.QuestMenus.QuestMenu;
 import graphic.textures.TextureHandler;
 
 import java.io.IOException;
@@ -104,8 +108,17 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private static PauseMenu<Actor> pauseMenu;
     public static GameOverMenu<Actor> gameOverMenu;
+
+    public static QuestMenu<Actor> questMenu;
+    public static ActiveQuestMenu<Actor> activeQuestMenu;
+
+    public boolean hasOngoingQuest = false;
     private static Entity hero;
     private Logger gameLogger;
+    public Questmaster questmaster;
+
+    private boolean hasShownQuestMenuThisLevel = false;
+
 
     public static void main(String[] args) {
         // start the game
@@ -115,6 +128,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             throw new RuntimeException(e);
         }
         DesktopLauncher.run(new Game());
+    }
+
+    public static int getCurrentLevel() {
+        return levelCounter;
     }
 
     /**
@@ -166,9 +183,17 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(systems);
         pauseMenu = new PauseMenu<>();
         gameOverMenu = new GameOverMenu<>();
+        questMenu = new QuestMenu<>();
+        activeQuestMenu = new ActiveQuestMenu<>();
+        controller.add(activeQuestMenu);
         controller.add(pauseMenu);
         controller.add(gameOverMenu);
+        controller.add(questMenu);
         hero = new Hero();
+
+        manageQuestMenus();
+
+
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
         levelAPI.loadLevel(LEVELSIZE);
         createSystems();
@@ -183,6 +208,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
         if (gameOverMenu.isMenuOpen) manageGameOverMenuInputs();
+
+
+        //manageQuestMenus();
+
 
         // TODO: remove this
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
@@ -219,19 +248,79 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
     }
 
+    private void manageQuestMenus() {
+        if (questmaster.hasInteracted && !hasOngoingQuest) {
+            if (!hasShownQuestMenuThisLevel) {
+                questMenu.showQuestMenu();
+                hasShownQuestMenuThisLevel = true;
+                questMenu.isMenuOpen = true;
+                systems.forEach(ECS_System::toggleRun);
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.H) && questMenu.isMenuOpen) {
+                System.out.println("Hero accepted the Quest");
+                hasOngoingQuest = true;
+                questMenu.isMenuOpen = false;
+                questMenu.hideQuestMenu();
+                systems.forEach(ECS_System::toggleRun);
+
+            } else if (Gdx.input.isKeyPressed(Input.Keys.J) && questMenu.isMenuOpen) {
+                System.out.println("Hero rejected the Quest");
+                questMenu.hideQuestMenu();
+                questMenu.isMenuOpen = false;
+                systems.forEach(ECS_System::toggleRun);
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.G) && hasOngoingQuest) {
+            toggleActiveQuestMenu();
+        }
+    }
+
+
+    public static void toggleActiveQuestMenu() {
+        paused = !paused;
+        if (systems != null) {
+            systems.forEach(ECS_System::toggleRun);
+        }
+        if (pauseMenu != null) {
+            if (paused) activeQuestMenu.showActiveQuestMenu();
+            else activeQuestMenu.hideActiveQuestMenu();
+        }
+    }
+
+
+    private void createQuest() {
+        if ( levelCounter >= 0) {    //questmaster.hasInteracted && !hasOngoingQuest &&
+            if (Math.random() > 0.5) {
+                new LevelQuest("Levelmaster", " complete 5 more Levels ");
+                activeQuestMenu.setScreenTextQuest("  Levelmaster", "  complete 5 more Levels ");
+                System.out.println("dgjfkrzkrzkedtjrtej");
+            } else {
+                new BossmonsterQuest("Flawless", "defeat the Dragon without even a tiny scratch!");
+                activeQuestMenu.setScreenTextQuest("  Flawless", "defeat the Dragon without \n even a tiny scratch!");
+                System.out.println("dgjfkrzkrzkedtjrtej");
+            }
+        }
+    }
+
     @Override
     public void onLevelLoad() {
         currentLevel = levelAPI.getCurrentLevel();
         levelCounter++;
+        System.out.println("Du bist in Level: " + levelCounter);
+        hasShownQuestMenuThisLevel = false;
 
         if (levelCounter % 10 == 0) {
             DragonP1.createNewDragonP1();
             dragonExists = true;
         } else {
-            if (levelCounter % 3 == 0){
+            if (levelCounter % 2 == 0) {
                 Ghost ghost = Ghost.createNewGhost();
                 Gravestone.createNewGravestone(ghost);
             }
+            questmaster = Questmaster.createNewQuestmaster();
+            createQuest();
+
             Mimic_Chest_Trap.createNewMimicChest();
             SlowTrap.createSlowTrap();
             Imp.createNewImp();
@@ -409,6 +498,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         new SkillSystem();
         new ProjectileSystem();
         new ManaSystem();
+        new QuestSystem();
     }
 
     public static void setDragonExistsFalse() {
