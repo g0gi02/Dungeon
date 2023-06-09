@@ -34,6 +34,7 @@ public class Questmaster extends NPC {
         new InteractionComponent(this, defaultInteractionRadius, false, this::onTrigger);
     }
 
+   // creates the Questmaster
     public static Questmaster createNewQuestmaster() {
         return new Questmaster(
             Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint());
@@ -43,4 +44,4 @@ public class Questmaster extends NPC {
         hasInteracted = true;
     }
 }
-//Math.random() > 0.5
+
