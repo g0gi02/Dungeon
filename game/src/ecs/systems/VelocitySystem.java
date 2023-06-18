@@ -31,11 +31,9 @@ public class VelocitySystem extends ECS_System {
         float newX = vsd.pc.getPosition().x + vsd.vc.getCurrentXVelocity();
         float newY = vsd.pc.getPosition().y + vsd.vc.getCurrentYVelocity();
         Point newPosition = new Point(newX, newY);
-        if (Game.currentLevel.getTileAt(newPosition.toCoordinate()) != null){
-            if (Game.currentLevel.getTileAt(newPosition.toCoordinate()).isAccessible()) {
-                vsd.pc.setPosition(newPosition);
-                movementAnimation(vsd.e);
-            }
+        if (Game.currentLevel.getTileAt(newPosition.toCoordinate()).isAccessible()) {
+            vsd.pc.setPosition(newPosition);
+            movementAnimation(vsd.e);
         }
 
         // remove or bounce projectiles that hit the wall or other non-accessible
