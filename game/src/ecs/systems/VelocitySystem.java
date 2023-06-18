@@ -31,25 +31,27 @@ public class VelocitySystem extends ECS_System {
         float newX = vsd.pc.getPosition().x + vsd.vc.getCurrentXVelocity();
         float newY = vsd.pc.getPosition().y + vsd.vc.getCurrentYVelocity();
         Point newPosition = new Point(newX, newY);
-        if (Game.currentLevel.getTileAt(newPosition.toCoordinate()).isAccessible()) {
-            vsd.pc.setPosition(newPosition);
-            movementAnimation(vsd.e);
+        if (Game.currentLevel.getTileAt(newPosition.toCoordinate()) != null){
+            if (Game.currentLevel.getTileAt(newPosition.toCoordinate()).isAccessible()) {
+                vsd.pc.setPosition(newPosition);
+                movementAnimation(vsd.e);
+            }
         }
 
         // remove or bounce projectiles that hit the wall or other non-accessible
         // tiles
-        else if (vsd.e.getComponent(ProjectileComponent.class).isPresent()) {    
+        else if (vsd.e.getComponent(ProjectileComponent.class).isPresent()) {
 
             // if the projectile is a bouncing projectile and is colliding with a wall, bounce it
             if(vsd.e.getComponent(BouncingComponent.class).isPresent()
                 && Game.currentLevel.getTileAt(newPosition.toCoordinate()).getLevelElement() != LevelElement.HOLE) {
                 executeBounce(vsd, newPosition);
             }
-                
-                
+
+
             Game.removeEntity(vsd.e);
         }
-        
+
 
         vsd.vc.setCurrentYVelocity(0);
         vsd.vc.setCurrentXVelocity(0);
@@ -64,7 +66,7 @@ public class VelocitySystem extends ECS_System {
         System.out.println();
         System.out.println(newTile.directionTo(oldTile).length);
         ((BouncingComponent) vsd.e.getComponent(BouncingComponent.class).get()).bounce(newTile.directionTo(oldTile));
-        System.out.println("Bouncing");   
+        System.out.println("Bouncing");
     }
 
     private VSData buildDataObject(VelocityComponent vc) {

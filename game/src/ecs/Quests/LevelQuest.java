@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 
 public class LevelQuest extends Quest {
-    private Logger levelQuestLogger = Logger.getLogger("LevelQuest");
+    private transient Logger levelQuestLogger;
     private final int levelsNeeded = 5;
 
     /**
@@ -19,6 +19,7 @@ public class LevelQuest extends Quest {
      */
     public LevelQuest(String questname, String description) {
         super(questname,description);
+        setupLogger();
         progressionMessage = " Es wurden null von " + levelsNeeded + "abgeschlossen";
     }
 
@@ -53,6 +54,11 @@ public class LevelQuest extends Quest {
         Optional<Component> heroHealth = Game.getHero().get().getComponent(HealthComponent.class);
         HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();
         currentHeroHealth.setCurrentHealthpoints(currentHeroHealth.getCurrentHealthpoints() + 10);
+        if (levelQuestLogger == null) setupLogger();
         levelQuestLogger.info("LevelQuest reward, heal 10 HP!");
+    }
+
+    private void setupLogger() {
+        levelQuestLogger = Logger.getLogger("LevelQuest");
     }
 }

@@ -14,6 +14,7 @@ import controller.AbstractController;
 import controller.SystemController;
 import ecs.Quests.BossmonsterQuest;
 import ecs.Quests.LevelQuest;
+import ecs.Quests.Quest;
 import ecs.components.*;
 import ecs.components.ai.AIComponent;
 import ecs.components.ai.*;
@@ -542,10 +543,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 .forEach(ghost -> ghost.removeComponent(HitboxComponent.class));
             // write relevant data to oos
             oos.writeObject(dragonExists);
+            oos.writeObject(hasOngoingQuest);
             oos.writeObject(levelCounter);
             oos.writeObject(currentLevel);
             oos.writeObject(hero);
             oos.writeObject(entities);
+            oos.writeObject(Quest.questList);
             oos.close();
             // re-add AIComponents to Entities
             entities.stream().filter(entity -> entity instanceof Monster).map(Monster.class::cast)
@@ -575,16 +578,20 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             // read objects from file
             boolean newDragonExists = (boolean) ois.readObject();
+            boolean newHasOngoingQuest = (boolean) ois.readObject();
             int newLevelCounter = (int) ois.readObject();
             ILevel newCurrentLevel = (ILevel) ois.readObject();
             Hero newHero = (Hero) ois.readObject();
             Set<Entity> newEntities = (HashSet<Entity>) ois.readObject();
+            ArrayList<Quest> newQuests = (ArrayList<Quest>) ois.readObject();
             ois.close();
             // add objects to game
             dragonExists = newDragonExists;
+            hasOngoingQuest = newHasOngoingQuest;
             levelCounter = newLevelCounter;
             hero = newHero;
             hero.setupLogger();
+            Quest.questList = newQuests;
             // set up transient values
             for (Entity entity : newEntities) {
                 if (entity instanceof Ghost) ((Ghost) entity).setupHitboxComponent();
