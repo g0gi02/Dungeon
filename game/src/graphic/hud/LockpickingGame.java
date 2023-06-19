@@ -141,13 +141,13 @@ public class LockpickingGame<T extends Actor> extends ScreenController<T> {
                     endLockpickingGame();
                     logger.info("lockpicking failed - clicked too late");
                 } else {
-                    endLockpickingGame();
                     logger.info("lockpicking successful");
                     if (associatedChest != null) {
                         associatedChest.getComponent(InteractionComponent.class)
                             .map(InteractionComponent.class::cast)
                             .ifPresent(InteractionComponent::triggerInteraction);
                     }
+                    endLockpickingGame();
                 }
             }
             // click to start the mini-game
