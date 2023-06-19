@@ -15,11 +15,15 @@ public class Gravestone extends NPC {
     //make sure grave can only be activated once per level
     private boolean graveActive = true;
 
-
     private static final String PATH_TO_IDLE = "gravestone";
 
     private Ghost ghost;
 
+    /**
+     * basic gravestone constructor from NPC
+     * @param position
+     * @param ghost
+     */
     public Gravestone(Point position, Ghost ghost) {
         super(
             X_SPEED,
@@ -28,18 +32,18 @@ public class Gravestone extends NPC {
             PATH_TO_IDLE,
             PATH_TO_IDLE,
             PATH_TO_IDLE,
-            position
-        );
+            position);
         this.ghost = ghost;
         setupHitboxComponent();
     }
 
-    //creates new gravestone
+    /**
+     * creates new gravestone
+     */
     public static Gravestone createNewGravestone(Ghost ghost) {
         return new Gravestone(
             Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint(), ghost);
     }
-
 
     private void setupHitboxComponent() {
         new HitboxComponent(
@@ -53,7 +57,7 @@ public class Gravestone extends NPC {
      * interaction when ghost and hero arrive at the gravestone
      *
      * @param hero
-     **/
+     */
     public void rewardHero(Entity hero) {
         if (hero instanceof Hero && graveActive && ghost.ghostWantsToFollow) {
             graveActive = false;
@@ -64,7 +68,7 @@ public class Gravestone extends NPC {
 
     /**
      * if the Hero gets a reward, he will gain 5 lives, if he  gets punished, he looses 5 instead
-     **/
+     */
     public void graveInteraction() {
         Optional<Component> heroHealth = Game.getHero().get().getComponent(HealthComponent.class);
         HealthComponent currentHeroHealth = (HealthComponent) heroHealth.orElseThrow();
@@ -78,32 +82,4 @@ public class Gravestone extends NPC {
             System.out.println("Punishment?!");
         }
     }
-
-
-
-    /*
-    private boolean isGraveActive = false;
-    private final Ghost ghost;
-
-    private void setUpPositionComponent() {
-        new PositionComponent(this);
-    }
-
-    private void setUpHitboxComponent() {
-        new HitboxComponent(
-            this,
-            (you, other, direction) -> rewardHero(other),
-            (you, other, direction) -> System.out.println()
-        );
-    }
-
-    public void rewardHero(Entity hero) {
-        if (hero instanceof Hero && !isGraveActive) {
-            isGraveActive = true;
-            ghost.graveInteraction();
-        }
-    }
-    */
-
-
 }

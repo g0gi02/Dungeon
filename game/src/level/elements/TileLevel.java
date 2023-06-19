@@ -1,5 +1,6 @@
 package level.elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ import level.tools.TileTextureFactory;
  *
  * @author Andre Matutat
  */
-public class TileLevel implements ILevel {
+public class TileLevel implements ILevel, Serializable {
     protected final TileHeuristic tileHeuristic = new TileHeuristic();
     protected Tile startTile;
     protected int nodeCount = 0;

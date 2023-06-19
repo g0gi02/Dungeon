@@ -26,7 +26,7 @@ public class WalkToEndTile implements IIdleAI {
     private int frameCounter = -1;
     private boolean atEndTile;
     private boolean initialized = false;
-    private GraphPath<Tile> currentPath;
+    private transient GraphPath<Tile> currentPath;
 
     public WalkToEndTile(float radius) {
         currentPath = null;
@@ -55,20 +55,21 @@ public class WalkToEndTile implements IIdleAI {
             frameCounter++;
             return;
         }
-        if (currentPath == null)
-        currentPath = atEndTile ? getPathAroundTile(entity) : getPathToEndTile(entity);
+        if (currentPath == null || currentPath.getCount() == 0) {
+            currentPath = atEndTile ? getPathAroundTile(entity) : getPathToEndTile(entity);
+        }
 
-        if (currentPath != null) {
+        if (currentPath != null && currentPath.getCount() != 0) {
             AITools.move(entity, currentPath);
         }
 
-        if (AITools.pathFinished(entity, currentPath)) {
+        if (currentPath != null && currentPath.getCount() != 0 && AITools.pathFinished(entity, currentPath)) {
             currentPath = null;
             atEndTile = !atEndTile;
             frameCounter = 0;
         }
     }
- 
+
     /**
      * Walk to the end tile.
      * @param entity
@@ -92,7 +93,7 @@ public class WalkToEndTile implements IIdleAI {
 
     private GraphPath<Tile> getPathAroundTile(Entity entity) {
         GraphPath<Tile> newPath = null;
-        
+
         Point currentPosition = getCurrentPositionOf(entity);
         Point newDestinationTile = getRandomAccessibleTileCoordinateInRange(currentPosition, RADIUS).toPoint();
         newPath = AITools.calculatePath(currentPosition, newDestinationTile);

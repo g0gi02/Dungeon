@@ -1,6 +1,8 @@
 package ecs.entities;
 
 import ecs.components.Component;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -11,17 +13,16 @@ import starter.Game;
 /** Entity is a unique identifier for an object in the game world */
 @DSLType(name = "game_object")
 @DSLContextPush(name = "entity")
-public class Entity {
+public class Entity implements Serializable {
     private static int nextId = 0;
     public final int id = nextId++;
     private HashMap<Class, Component> components;
-    private final Logger entityLogger;
+    private transient Logger entityLogger;
 
     public Entity() {
         components = new HashMap<>();
         Game.addEntity(this);
-        entityLogger = Logger.getLogger(this.getClass().getName());
-        entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+        setupLogger();
     }
 
     /**
@@ -51,4 +52,18 @@ public class Entity {
     public Optional<Component> getComponent(Class klass) {
         return Optional.ofNullable(components.get(klass));
     }
+
+    /**
+     * Set up the Logger for the Entity and its Components
+     */
+    public void setupLogger() {
+        entityLogger = Logger.getLogger(this.getClass().getName());
+        entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+        components.forEach((klass, component) -> component.setupLogger());
+    }
+
+    /**
+     * Set up the AIComponent for the Entity
+     */
+    public void setupAIComponent() {}
 }

@@ -12,21 +12,29 @@ import configuration.Configuration;
 import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
+import ecs.Quests.BossmonsterQuest;
+import ecs.Quests.LevelQuest;
+import ecs.Quests.Quest;
+import ecs.components.*;
+import ecs.components.ai.AIComponent;
+import ecs.components.ai.*;
 import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.entities.*;
 import ecs.entities.Imp;
-import ecs.components.VelocityComponent;
+import ecs.items.ItemData;
 import ecs.systems.*;
 
 import graphic.DungeonCamera;
 import graphic.Painter;
+import graphic.hud.QuestMenus.ActiveQuestMenu;
 import graphic.hud.GameOverMenu;
 import graphic.hud.PauseMenu;
+import graphic.hud.QuestMenus.QuestMenu;
 import graphic.textures.TextureHandler;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -104,8 +112,17 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private static PauseMenu<Actor> pauseMenu;
     public static GameOverMenu<Actor> gameOverMenu;
+
+    public static QuestMenu<Actor> questMenu;
+    public static ActiveQuestMenu<Actor> activeQuestMenu;
+
+    private static boolean hasOngoingQuest = false;
     private static Entity hero;
     private Logger gameLogger;
+    public Questmaster questmaster;
+
+    private boolean hasShownQuestMenuThisLevel = false;
+
 
     public static void main(String[] args) {
         // start the game
@@ -115,6 +132,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             throw new RuntimeException(e);
         }
         DesktopLauncher.run(new Game());
+    }
+
+    public static int getCurrentLevelCounter() {
+        return levelCounter;
     }
 
     /**
@@ -166,9 +187,17 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(systems);
         pauseMenu = new PauseMenu<>();
         gameOverMenu = new GameOverMenu<>();
+        questMenu = new QuestMenu<>();
+        activeQuestMenu = new ActiveQuestMenu<>();
+        controller.add(activeQuestMenu);
         controller.add(pauseMenu);
         controller.add(gameOverMenu);
+        controller.add(questMenu);
         hero = new Hero();
+
+        //manageQuestMenus();
+
+
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
         levelAPI.loadLevel(LEVELSIZE);
         createSystems();
@@ -183,12 +212,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
         if (gameOverMenu.isMenuOpen) manageGameOverMenuInputs();
-
-        // TODO: remove this
+        manageQuestMenus();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) saveGame("game/saves/save.txt");
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) loadGame("game/saves/save.txt");
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) levelAPI.loadLevel(LEVELSIZE);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) Mimic_Chest_Trap.createNewMimicChest();
-        if (Gdx.input.isKeyJustPressed(Input.Keys.B)) Chest.createNewChest();
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             Logger logger = Logger.getLogger("Health");
             Game.getHero().stream()
@@ -203,7 +230,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private void manageGameOverMenuInputs() {
         //check Inputs while gameOverMenu is active
         if (Gdx.input.isKeyPressed(Input.Keys.K)) {
-            System.out.println("game has endet");
+            gameLogger.info("game has endet");
             Gdx.app.exit();
             //remove all Entities and place a new hero
         } else if (Gdx.input.isKeyPressed(Input.Keys.L)) {
@@ -214,29 +241,105 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 Game.removeEntity(entityIterator.next());
             }
             Game.setHero(hero);
-            System.out.println("restart");
+            levelCounter = 0;
+            gameLogger.info("restart");
             gameOverMenu.hideEndMenu();
         }
+    }
+
+    /**
+     * Manages the Questmaster input and the Questmenu Input.
+     */
+    private void manageQuestMenus() {
+        if (questmaster.hasInteracted && !hasOngoingQuest) {
+            if (!hasShownQuestMenuThisLevel) {
+                questMenu.showQuestMenu();
+                hasShownQuestMenuThisLevel = true;
+                questMenu.isMenuOpen = true;
+                systems.forEach(ECS_System::toggleRun);
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.H) && questMenu.isMenuOpen) {
+                gameLogger.info("Hero accepted the Quest");
+                questMenu.isMenuOpen = false;
+                questMenu.hideQuestMenu();
+                systems.forEach(ECS_System::toggleRun);
+                createQuest();
+
+
+            } else if (Gdx.input.isKeyPressed(Input.Keys.J) && questMenu.isMenuOpen) {
+                gameLogger.info("Hero rejected the Quest");
+                questMenu.hideQuestMenu();
+                questMenu.isMenuOpen = false;
+                systems.forEach(ECS_System::toggleRun);
+            }
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.G) && hasOngoingQuest) {
+            toggleActiveQuestMenu();
+        }
+    }
+
+    /**
+     * Called when the Quest Menu is opened.
+     * Opens a hud with the Quest information
+     */
+    public static void toggleActiveQuestMenu() {
+        paused = !paused;
+        if (systems != null) {
+            systems.forEach(ECS_System::toggleRun);
+        }
+        if (pauseMenu != null) {
+            if (paused) activeQuestMenu.showActiveQuestMenu();
+            else activeQuestMenu.hideActiveQuestMenu();
+        }
+    }
+
+    /**
+     * Called after a Quest has been accepted.
+     * Creates a new Random Quest
+     */
+    private void createQuest() {
+        if (!hasOngoingQuest) {
+            if (Math.random() > 0.5) {
+                new LevelQuest("Levelmaster", " complete 5 more Levels ");
+                activeQuestMenu.setScreenTextQuest("  Levelmaster", "  complete 5 \n more Levels ");
+            } else {
+                new BossmonsterQuest("Flawless", "defeat the Dragon without even a tiny scratch!");
+                activeQuestMenu.setScreenTextQuest("  Flawless", "defeat the Dragon \n without  even a  \n tiny scratch!");
+            }
+        }
+        hasOngoingQuest = true;
     }
 
     @Override
     public void onLevelLoad() {
         currentLevel = levelAPI.getCurrentLevel();
         levelCounter++;
+        gameLogger.info("Level " + levelCounter + " loaded");
+        hasShownQuestMenuThisLevel = false;
 
         if (levelCounter % 10 == 0) {
             DragonP1.createNewDragonP1();
             dragonExists = true;
         } else {
-            if (levelCounter % 3 == 0){
-                Ghost ghost = Ghost.createNewGhost();
-                Gravestone.createNewGravestone(ghost);
+            if (levelCounter % 2 == 0) {
+                // Ghost ghost = Ghost.createNewGhost();
+                // Gravestone.createNewGravestone(ghost);
             }
+            questmaster = Questmaster.createNewQuestmaster();
+            //createQuest();
+
             Mimic_Chest_Trap.createNewMimicChest();
             SlowTrap.createSlowTrap();
             Imp.createNewImp();
             Slime.createNewSlime();
             Chort.createNewChort();
+            //If the player has a sword in the inventory, it wont be added again
+            InventoryComponent ic = (InventoryComponent) getHero().get().getComponent(InventoryComponent.class).get();
+            if(!ic.hasItemOfType("Sword")) addEntity(new SwordItem());
+            addEntity(new HealthPotion());
+            addEntity(new BombItem());
+            addEntity(new BackpackItem());
         }
 
         entities.clear();
@@ -398,6 +501,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         // https://stackoverflow.com/questions/52011592/libgdx-set-ortho-camera
     }
 
+    public static void setHasOngoingQuest(boolean value) {
+        hasOngoingQuest = value;
+    }
+
+
+
     private void createSystems() {
         new VelocitySystem();
         new DrawSystem(painter);
@@ -409,9 +518,97 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         new SkillSystem();
         new ProjectileSystem();
         new ManaSystem();
+        new QuestSystem();
     }
 
     public static void setDragonExistsFalse() {
         dragonExists = false;
+    }
+
+    /**
+     * save the Level and all Entities with their Components in a file
+     *
+     * @param saveFile the file being written to
+     */
+    public void saveGame(String saveFile) {
+        gameLogger.info("Game saving started.");
+        togglePause();
+        try (FileOutputStream fos = new FileOutputStream(saveFile);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            // remove AIComponent before serialization
+            entities.stream().filter(entity -> entity.getComponent(AIComponent.class)
+                .isPresent()).forEach(entity -> entity.removeComponent(AIComponent.class));
+            // remove Ghosts HitboxComponent before serialization, as it contains an idle-AI
+            entities.stream().filter(entity -> entity instanceof Ghost).map(Ghost.class::cast)
+                .forEach(ghost -> ghost.removeComponent(HitboxComponent.class));
+            // write relevant data to oos
+            oos.writeObject(dragonExists);
+            oos.writeObject(hasOngoingQuest);
+            oos.writeObject(levelCounter);
+            oos.writeObject(currentLevel);
+            oos.writeObject(hero);
+            oos.writeObject(entities);
+            oos.writeObject(Quest.questList);
+            oos.close();
+            // re-add AIComponents to Entities
+            entities.stream().filter(entity -> entity instanceof Monster).map(Monster.class::cast)
+                .forEach(Monster::setupAIComponent);
+            entities.stream().filter(entity -> entity instanceof NPC).map(NPC.class::cast)
+                .forEach(NPC::setupAIComponent);
+            // re-add Ghosts HitboxComponent
+            entities.stream().filter(entity -> entity instanceof Ghost).map(Ghost.class::cast)
+                .forEach(Ghost::setupHitboxComponent);
+            gameLogger.info("Game saved successfully.");
+        } catch (IOException ex) {
+            gameLogger.severe("Game could not be saved.");
+            ex.printStackTrace();
+        }
+        togglePause();
+    }
+
+    /**
+     * read the Level and Entities from a file
+     *
+     * @param saveFile the file being read from
+     */
+    public void loadGame(String saveFile) {
+        gameLogger.info("Game loading started.");
+        togglePause();
+        try (FileInputStream fis = new FileInputStream(saveFile);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            // read objects from file
+            boolean newDragonExists = (boolean) ois.readObject();
+            boolean newHasOngoingQuest = (boolean) ois.readObject();
+            int newLevelCounter = (int) ois.readObject();
+            ILevel newCurrentLevel = (ILevel) ois.readObject();
+            Hero newHero = (Hero) ois.readObject();
+            Set<Entity> newEntities = (HashSet<Entity>) ois.readObject();
+            ArrayList<Quest> newQuests = (ArrayList<Quest>) ois.readObject();
+            ois.close();
+            // add objects to game
+            dragonExists = newDragonExists;
+            hasOngoingQuest = newHasOngoingQuest;
+            levelCounter = newLevelCounter;
+            hero = newHero;
+            hero.setupLogger();
+            Quest.questList = newQuests;
+            // set up transient values
+            for (Entity entity : newEntities) {
+                if (entity instanceof Ghost) ((Ghost) entity).setupHitboxComponent();
+                entity.setupLogger();
+                entity.setupAIComponent();
+            }
+            // remove old entities before adding new ones
+            entitiesToRemove.addAll(entities);
+            entitiesToAdd.addAll(newEntities);
+            // set the level
+            currentLevel = newCurrentLevel;
+            levelAPI.setCurrentLevel(newCurrentLevel);
+            gameLogger.info("Game loaded successfully.");
+        } catch (IOException | ClassNotFoundException ex) {
+            gameLogger.severe("File: "+saveFile+" could not be loaded.");
+            ex.printStackTrace();
+        }
+        togglePause();
     }
 }

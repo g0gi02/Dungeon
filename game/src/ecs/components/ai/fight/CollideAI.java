@@ -10,7 +10,7 @@ public class CollideAI implements IFightAI {
     private final float rushRange;
     private final int delay = Constants.FRAME_RATE;
     private int timeSinceLastUpdate = delay;
-    private GraphPath<Tile> path;
+    private transient GraphPath<Tile> path;
 
     /**
      * Attacks the player by colliding if he is within the given range. Otherwise, it will move
@@ -27,16 +27,16 @@ public class CollideAI implements IFightAI {
         if (AITools.playerInRange(entity, rushRange)) {
             // the faster pathing once a certain range is reached
             path = AITools.calculatePathToHero(entity);
-            AITools.move(entity, path);
+            if (path.getCount() != 0) AITools.move(entity, path);
             timeSinceLastUpdate = delay;
         } else {
             // check if new pathing update
-            if (timeSinceLastUpdate >= delay) {
+            if (timeSinceLastUpdate >= delay || path == null || path.getCount() == 0) {
                 path = AITools.calculatePathToHero(entity);
                 timeSinceLastUpdate = -1;
             }
             timeSinceLastUpdate++;
-            AITools.move(entity, path);
+            if(path.getCount() != 0) AITools.move(entity, path);
         }
     }
 }

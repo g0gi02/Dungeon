@@ -18,7 +18,7 @@ public class HitboxComponent extends Component {
     private /*@DSLTypeMember(name="size")*/ Point size;
     private ICollide iCollideEnter;
     private ICollide iCollideLeave;
-    private final Logger hitboxLogger = Logger.getLogger(this.getClass().getName());
+    private transient Logger hitboxLogger;
 
     /**
      * Creates A Hitbox
@@ -40,6 +40,7 @@ public class HitboxComponent extends Component {
         this.size = size;
         this.iCollideEnter = iCollideEnter;
         this.iCollideLeave = iCollideLeave;
+        setupLogger();
     }
 
     /**
@@ -51,6 +52,7 @@ public class HitboxComponent extends Component {
      */
     public HitboxComponent(Entity entity, ICollide iCollideEnter, ICollide iCollideLeave) {
         this(entity, DEFAULT_OFFSET, DEFAULT_SIZE, iCollideEnter, iCollideLeave);
+        setupLogger();
     }
 
     /**
@@ -61,6 +63,7 @@ public class HitboxComponent extends Component {
      */
     public HitboxComponent(@DSLContextMember(name = "entity") Entity entity) {
         this(entity, HitboxComponent.DEFAULT_COLLIDER, HitboxComponent.DEFAULT_COLLIDER);
+        setupLogger();
     }
 
     /**
@@ -76,6 +79,7 @@ public class HitboxComponent extends Component {
      * @param direction direction in which the collision happens
      */
     public void onLeave(HitboxComponent other, Tile.Direction direction) {
+        if (hitboxLogger == null) setupLogger();
         if (iCollideLeave != null) {
             hitboxLogger.log(
                     CustomLogLevel.DEBUG,
@@ -145,5 +149,13 @@ public class HitboxComponent extends Component {
     private static MissingComponentException getMissingPositionComponentException() {
         return new MissingComponentException(
                 PositionComponent.class.getName() + " in " + HitboxComponent.class.getName());
+    }
+
+    /**
+     * Set up the Logger for the HitboxComponent
+     */
+    @Override
+    public void setupLogger() {
+        hitboxLogger = Logger.getLogger(this.getClass().getName());
     }
 }

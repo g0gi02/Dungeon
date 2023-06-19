@@ -19,7 +19,7 @@ public class AnimationComponent extends Component {
     private @DSLTypeMember(name = "idle_left") Animation idleLeft;
     private @DSLTypeMember(name = "idle_right") Animation idleRight;
     private @DSLTypeMember(name = "current_animation") Animation currentAnimation;
-    private final Logger animCompLogger = Logger.getLogger(this.getClass().getName());
+    private transient Logger animCompLogger;
 
     /**
      * @param entity associated entity
@@ -31,6 +31,7 @@ public class AnimationComponent extends Component {
         this.idleRight = idleRight;
         this.idleLeft = idleLeft;
         this.currentAnimation = idleLeft;
+        setupLogger();
     }
 
     /**
@@ -46,6 +47,7 @@ public class AnimationComponent extends Component {
      */
     public AnimationComponent(@DSLContextMember(name = "entity") Entity entity) {
         super(entity);
+        setupLogger();
         this.idleLeft = new Animation(missingTexture, 100);
         this.idleRight = new Animation(missingTexture, 100);
         this.currentAnimation = new Animation(missingTexture, 100);
@@ -77,6 +79,7 @@ public class AnimationComponent extends Component {
      */
     public Animation getCurrentAnimation() {
         if (currentAnimation.getAnimationFrames().size() > 0) {
+            if (animCompLogger == null) setupLogger();
             animCompLogger.log(
                     CustomLogLevel.DEBUG,
                     this.getClass().getSimpleName()
@@ -108,5 +111,13 @@ public class AnimationComponent extends Component {
      */
     public Animation getIdleRight() {
         return idleRight;
+    }
+
+    /**
+     * Set up the Logger for the AnimationComponent
+     */
+    @Override
+    public void setupLogger() {
+        animCompLogger = Logger.getLogger(this.getClass().getName());
     }
 }

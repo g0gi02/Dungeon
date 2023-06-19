@@ -3,9 +3,13 @@ package level.elements.tile;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.utils.Array;
 import ecs.entities.Entity;
+
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import level.elements.ILevel;
+import level.elements.SerializableArray;
 import level.elements.TileLevel;
 import level.elements.astar.TileConnection;
 import level.tools.Coordinate;
@@ -18,14 +22,14 @@ import tools.Point;
  *
  * @author Andre Matutat
  */
-public abstract class Tile {
+public abstract class Tile implements Serializable {
     protected final Coordinate globalPosition;
     protected DesignLabel designLabel;
     protected String texturePath;
 
     protected ILevel level;
     protected LevelElement levelElement;
-    protected transient Array<Connection<Tile>> connections = new Array<>();
+    protected Array<Connection<Tile>> connections = new SerializableArray<>();
     protected int index;
 
     /**

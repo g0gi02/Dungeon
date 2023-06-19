@@ -12,7 +12,7 @@ import tools.Point;
 
 public class StaticRadiusWalk implements IIdleAI {
     private final float radius;
-    private GraphPath<Tile> path;
+    private transient GraphPath<Tile> path;
     private final int breakTime;
     private int currentBreak = 0;
     private Point center;
@@ -33,7 +33,7 @@ public class StaticRadiusWalk implements IIdleAI {
 
     @Override
     public void idle(Entity entity) {
-        if (path == null || AITools.pathFinishedOrLeft(entity, path)) {
+        if (path == null || path.getCount() == 0 || AITools.pathFinishedOrLeft(entity, path)) {
             if (center == null) {
                 PositionComponent pc =
                         (PositionComponent)
@@ -53,6 +53,6 @@ public class StaticRadiusWalk implements IIdleAI {
             }
             currentBreak++;
 
-        } else AITools.move(entity, path);
+        } else if (path.getCount() != 0) AITools.move(entity, path);
     }
 }

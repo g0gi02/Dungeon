@@ -92,7 +92,8 @@ public class DragonP2 extends BossMonster{
         );
     }
 
-    private void setupAIComponent() {
+    @Override
+    public void setupAIComponent() {
         new AIComponent(this, setupFightStrategy(),
             setupIdleStrategy(), setupTransitionStrategy());
     }
