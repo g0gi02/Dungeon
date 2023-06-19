@@ -220,7 +220,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
         // temp
         if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
-            lockpickingGame.startLockpickingGame();
+            lockpickingGame.startLockpickingGame(null);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             Logger logger = Logger.getLogger("Health");
@@ -495,6 +495,11 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     public static boolean isPaused() {
         return paused;
+    }
+
+    /** changes the boolean "paused" in the game */
+    public static void togglePaused() {
+        paused = !paused;
     }
 
     public void setSpriteBatch(SpriteBatch batch) {
