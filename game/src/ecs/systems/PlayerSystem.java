@@ -52,29 +52,29 @@ public class PlayerSystem extends ECS_System {
             ksd.pc.getSkillSlot5().ifPresent(skill -> skill.execute(ksd.e));
 
         // check inventory
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY.get()))
         ksd.ic.setOpen();
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_DROP.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_DROP.get()))
         ksd.ic.removeLastItem();
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_FIRST.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_FIRST.get()))
             ksd.ic.useItem(0);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_SECOND.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_SECOND.get()))
             ksd.ic.useItem(1);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_THIRD.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_THIRD.get()))
             ksd.ic.useItem(2);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_FOURTH.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_FOURTH.get()))
             ksd.ic.useItem(3);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_FIFTH.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_FIFTH.get()))
             ksd.ic.useItem(4);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_SIXTH.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_SIXTH.get()))
             ksd.ic.useItem(5);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_SEVENTH.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_SEVENTH.get()))
             ksd.ic.useItem(6);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_EIGHTH.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_EIGHTH.get()))
             ksd.ic.useItem(7);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_NINTH.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_NINTH.get()))
             ksd.ic.useItem(8);
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.INVENTORY_FOURTH.get()))
+        else if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_FOURTH.get()))
             ksd.ic.useItem(9);
     }
 

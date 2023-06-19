@@ -56,6 +56,25 @@ public abstract class Monster extends Entity {
         setupHealthComponent();
     }
 
+    /**
+     * Creates a new Monster with the given parameters.
+     * @param xSpeed
+     * @param ySpeed
+     * @param MAX_HEALTH
+     */
+    public Monster(float xSpeed, float ySpeed, int MAX_HEALTH) {
+        super();
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
+        this.MAX_HEALTH = MAX_HEALTH;
+        this.attackRange = 0;
+
+        this.pathToIdleLeft = "";
+        this.pathToIdleRight = "";
+        this.pathToRunLeft = "";
+        this.pathToRunRight = "";
+    }
+
     private void setupHealthComponent() {
         // Animation monsterHit = AnimationBuilder.buildAnimation(pathToHit);
         // Animation monsterDeath = AnimationBuilder.buildAnimation(pathToDeath);

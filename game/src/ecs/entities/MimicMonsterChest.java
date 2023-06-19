@@ -11,43 +11,59 @@ import level.tools.LevelElement;
 import starter.Game;
 import tools.Point;
 
-public class Chest extends Entity {
+public class MimicMonsterChest extends Entity {
     //TODO: Variablennamen anpassen
     public static final float defaultInteractionRadius = 5f;
     public static final List<String> DEFAULT_CLOSED_ANIMATION_FRAMES =
-            List.of("objects/treasurechest/chest_full_open_anim_f0.png");
+            List.of("objects/mimicchest/mimic_chest_full_open_anim_f0.png");
     public static final List<String> DEFAULT_OPENING_ANIMATION_FRAMES =
             List.of(
-                    "objects/treasurechest/chest_full_open_anim_f0.png",
-                    "objects/treasurechest/chest_full_open_anim_f1.png",
-                    "objects/treasurechest/chest_full_open_anim_f2.png",
-                    "objects/treasurechest/chest_empty_open_anim_f2.png");
+                    "objects/mimicchest/mimic_chest_full_open_anim_f0.png",
+                    "objects/mimicchest/mimic_chest_full_open_anim_f1.png",
+                    "objects/mimicchest/mimic_chest_full_open_anim_f2.png");
 
     /**
-     * small Generator which uses the Item#ITEM_REGISTER
+     * Create an Instance of MimicMonsterChest at a random position
      *
-     * @return a configured Chest
+     * @return a configured MimicMonsterChest
      */
-    public static Chest createNewChest() {
+    public static MimicMonsterChest createNewMimicMonsterChest() {
         Random random = new Random();
         ItemDataGenerator itemDataGenerator = new ItemDataGenerator();
 
         List<ItemData> itemData =
                 IntStream.range(0, random.nextInt(1, 3))
-                        .mapToObj(i -> itemDataGenerator.generateItemData())
+                        .mapToObj(i -> itemDataGenerator.generateItemData(ItemDataGenerator.ItemPool.SPECIAL))
                         .toList();
-        return new Chest(
+        return new MimicMonsterChest(
                 itemData,
                 Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint());
     }
 
     /**
-     * Creates a new Chest which drops the given items on interaction
+     * Create an Instance of MimicMonsterChest at the given position
+     * With random items
+     * @param position
+     * @return
+     */
+    public static MimicMonsterChest createNewMimicMonsterChest(Point position) {
+        Random random = new Random();
+        ItemDataGenerator itemDataGenerator = new ItemDataGenerator();
+
+        List<ItemData> itemData =
+                IntStream.range(0, random.nextInt(1, 3))
+                        .mapToObj(i -> itemDataGenerator.generateItemData(ItemDataGenerator.ItemPool.SPECIAL))
+                        .toList();
+        return new MimicMonsterChest(itemData, position);
+    }
+
+    /**
+     * Creates a new MimicMonsterChest which drops the given items on interaction
      *
      * @param itemData which the chest is supposed to drop
      * @param position the position where the chest is placed
      */
-    public Chest(List<ItemData> itemData, Point position) {
+    public MimicMonsterChest(List<ItemData> itemData, Point position) {
         new PositionComponent(this, position);
         InventoryComponent ic = new InventoryComponent(this, itemData.size());
         itemData.forEach(ic::addItem);
@@ -55,8 +71,8 @@ public class Chest extends Entity {
         AnimationComponent ac =
                 new AnimationComponent(
                         this,
-                        new Animation(DEFAULT_CLOSED_ANIMATION_FRAMES, 50, false),
-                        new Animation(DEFAULT_OPENING_ANIMATION_FRAMES, 50, false));
+                        new Animation(DEFAULT_CLOSED_ANIMATION_FRAMES, 2, false),
+                        new Animation(DEFAULT_OPENING_ANIMATION_FRAMES, 2, false));
     }
 
     private void dropItems(Entity entity) {
@@ -77,6 +93,10 @@ public class Chest extends Entity {
         List<ItemData> itemData = inventoryComponent.getItems();
         double count = itemData.size();
 
+        entity.getComponent(AnimationComponent.class)
+                .map(AnimationComponent.class::cast)
+                .ifPresent(x -> x.setCurrentAnimation(x.getIdleRight()));
+
         IntStream.range(0, itemData.size())
                 .forEach(
                         index ->
@@ -85,17 +105,14 @@ public class Chest extends Entity {
                                                 entity,
                                                 calculateDropPosition(
                                                         positionComponent, index / count)));
-        entity.getComponent(AnimationComponent.class)
-                .map(AnimationComponent.class::cast)
-                .ifPresent(x -> x.setCurrentAnimation(x.getIdleRight()));
     }
 
     /**
      * small Helper to determine the Position of the dropped item simple circle drop
      *
-     * @param positionComponent The PositionComponent of the Chest
+     * @param positionComponent The PositionComponent of the MimicMonsterChest
      * @param radian of the current Item
-     * @return a Point in a unit Vector around the Chest
+     * @return a Point in a unit Vector around the MimicMonsterChest
      */
     private static Point calculateDropPosition(PositionComponent positionComponent, double radian) {
         return new Point(
@@ -115,8 +132,9 @@ public class Chest extends Entity {
         return new MissingComponentException(
                 Component
                         + " missing in "
-                        + Chest.class.getName()
+                        + MimicMonsterChest.class.getName()
                         + " in Entity "
                         + e.getClass().getName());
     }
 }
+

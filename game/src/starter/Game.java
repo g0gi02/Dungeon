@@ -25,6 +25,8 @@ import ecs.entities.*;
 import ecs.entities.Imp;
 import ecs.items.ItemData;
 import ecs.systems.*;
+import ecs.entities.Chest;
+import ecs.entities.MimicMonster;
 
 import graphic.DungeonCamera;
 import graphic.Painter;
@@ -216,6 +218,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) saveGame("game/saves/save.txt");
         if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) loadGame("game/saves/save.txt");
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.H)) MimicMonster.createNewMimicMonster();
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             Logger logger = Logger.getLogger("Health");
             Game.getHero().stream()
@@ -329,7 +332,6 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             questmaster = Questmaster.createNewQuestmaster();
             //createQuest();
 
-            Mimic_Chest_Trap.createNewMimicChest();
             SlowTrap.createSlowTrap();
             Imp.createNewImp();
             Slime.createNewSlime();
@@ -340,6 +342,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             addEntity(new HealthPotion());
             addEntity(new BombItem());
             addEntity(new BackpackItem());
+            MimicMonster.createNewMimicMonster();
         }
 
         entities.clear();

@@ -36,20 +36,18 @@ public class VelocitySystem extends ECS_System {
                 vsd.pc.setPosition(newPosition);
                 movementAnimation(vsd.e);
             }
-        }
+            
+            // remove or bounce projectiles that hit the wall or other non-accessible
+            // tiles
+            else if (vsd.e.getComponent(ProjectileComponent.class).isPresent()) {
 
-        // remove or bounce projectiles that hit the wall or other non-accessible
-        // tiles
-        else if (vsd.e.getComponent(ProjectileComponent.class).isPresent()) {
-
-            // if the projectile is a bouncing projectile and is colliding with a wall, bounce it
-            if(vsd.e.getComponent(BouncingComponent.class).isPresent()
-                && Game.currentLevel.getTileAt(newPosition.toCoordinate()).getLevelElement() != LevelElement.HOLE) {
-                executeBounce(vsd, newPosition);
+                // if the projectile is a bouncing projectile and is colliding with a wall, bounce it
+                if(vsd.e.getComponent(BouncingComponent.class).isPresent()
+                    && Game.currentLevel.getTileAt(newPosition.toCoordinate()).getLevelElement() != LevelElement.HOLE) {
+                    executeBounce(vsd, newPosition);
+                }
+                Game.removeEntity(vsd.e);
             }
-
-
-            Game.removeEntity(vsd.e);
         }
 
 

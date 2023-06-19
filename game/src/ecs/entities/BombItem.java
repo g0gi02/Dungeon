@@ -188,4 +188,18 @@ public class BombItem extends Item implements IOnUse, IOnCollect, IOnDrop {
     public void setupLogger() {
         bombItemLogger = Logger.getLogger("BombItem");
     }
+
+    public ItemData getItemData() {
+        return itemComponent.getItemData();
+    }
+
+    public static ItemData getItemConfigData() {
+        return new BombItem(1).getItemData();
+    }
+
+    public BombItem(int i) {
+        setupItemComponent();
+    }
+
+
 }

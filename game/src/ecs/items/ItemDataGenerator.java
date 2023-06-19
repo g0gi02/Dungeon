@@ -3,31 +3,31 @@ package ecs.items;
 import graphic.Animation;
 import java.util.List;
 import java.util.Random;
+import configuration.ItemConfig;
+import ecs.entities.BombItem;
+import ecs.entities.HealthPotion;
+import ecs.entities.SwordItem;
+
 
 /** Generator which creates a random ItemData based on the Templates prepared. */
 public class ItemDataGenerator {
     private static final List<String> missingTexture = List.of("animation/missingTexture.png");
+    public enum ItemPool {
+        COMMON, SPECIAL;
+    }
 
     private List<ItemData> templates =
             List.of(
-                    new ItemData(
-                            ItemType.Basic,
-                            new Animation(missingTexture, 1),
-                            new Animation(missingTexture, 1),
-                            "Buch",
-                            "Ein sehr lehrreiches Buch."),
-                    new ItemData(
-                            ItemType.Basic,
-                            new Animation(missingTexture, 1),
-                            new Animation(missingTexture, 1),
-                            "Tuch",
-                            "Ein sauberes Tuch.."),
-                    new ItemData(
-                            ItemType.Basic,
-                            new Animation(missingTexture, 1),
-                            new Animation(missingTexture, 1),
-                            "Namensschild",
-                            "Ein Namensschild wo der Name nicht mehr lesbar ist.."));
+                    BombItem.getItemConfigData(),
+                    
+                    HealthPotion.getItemConfigData(),
+                    
+                    SwordItem.getItemConfigData());
+    private List<ItemData> specialTemplates =
+            List.of(
+                    SwordItem.getItemConfigData());
+
+                            
     private Random rand = new Random();
 
     /**
@@ -35,5 +35,19 @@ public class ItemDataGenerator {
      */
     public ItemData generateItemData() {
         return templates.get(rand.nextInt(templates.size()));
+    }
+
+    /**
+     * @param itemPool
+     * @return a new randomItemData from the given pool
+     */
+    public ItemData generateItemData(ItemPool itemPool) {
+        switch (itemPool) {
+            case COMMON:
+                return templates.get(rand.nextInt(templates.size()));
+            case SPECIAL:
+                return specialTemplates.get(rand.nextInt(specialTemplates.size()));
+        }
+        return new ItemData();
     }
 }

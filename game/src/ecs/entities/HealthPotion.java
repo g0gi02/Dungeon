@@ -171,4 +171,16 @@ public class HealthPotion extends Item implements IOnUse, IOnCollect, IOnDrop {
     public void setupLogger() {
         healthPotionLogger = Logger.getLogger("HealthPotion");
     }
+
+    public ItemData getItemData() {
+        return itemComponent.getItemData();
+    }
+
+    public static ItemData getItemConfigData() {
+        return new HealthPotion(1).getItemData();
+    }
+
+    public HealthPotion(int i) {
+        setupItemComponent();
+    }
 }
