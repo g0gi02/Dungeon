@@ -51,6 +51,8 @@ public class Hero extends Entity {
     private PlayableComponent pc;
     private ManaComponent mc;
 
+    public boolean canOpenChest = false;
+
     /** Entity with Components */
     public Hero() {
         super();
@@ -166,7 +168,7 @@ public class Hero extends Entity {
     public Skill getMeleeSkill() {
         return this.meleeSkill;
     }
-    
+
     // Fireball skill
     private void unlockFirstSkill() {
         this.pc.setSkillSlot1(firstSkill);

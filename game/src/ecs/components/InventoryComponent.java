@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import logging.CustomLogLevel;
 import ecs.components.ai.AITools;
+import starter.Game;
 import tools.Point;
 
 /** Allows an Entity to carry Items */
@@ -80,7 +81,7 @@ public class InventoryComponent extends Component {
     }
 
     /**
-     * Drop the first item in the inventory 
+     * Drop the first item in the inventory
      * trigger the drop event of the item
      * @return true if the item was dropped, otherwise false
      */
@@ -107,7 +108,7 @@ public class InventoryComponent extends Component {
         itemData.triggerDrop(entity, AITools.getRandomAccessibleTileCoordinateInRange(point, 1f).toPoint());
     }
 
-    /** 
+    /**
      * Set the inventory to open
      */
     public void setOpen() {
