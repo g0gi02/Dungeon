@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import level.tools.LevelElement;
 import starter.Game;
 import tools.Point;
+import ecs.entities.IChest;
 
 public class Chest extends Entity {
     //TODO: Variablennamen anpassen

@@ -8,6 +8,7 @@ import graphic.Animation;
 import level.tools.LevelElement;
 import starter.Game;
 import tools.Point;
+import graphic.hud.LockpickingGame;
 
 import java.security.Key;
 import java.util.List;
@@ -15,10 +16,11 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 import ecs.entities.MasterworkChest;
+import ecs.entities.IChest;
 
 public class MasterworkChest extends Entity {
 
-    public static final float defaultInteractionRadius = 1f;
+    public static final float defaultInteractionRadius = 2f;
 
     public static final List<String> DEFAULT_CLOSED_ANIMATION_FRAMES =
         List.of("objects/masterworkChest/masterworkchest_full_open_anim_f0.png");
@@ -28,6 +30,8 @@ public class MasterworkChest extends Entity {
             "objects/masterworkChest/masterworkchest_full_open_anim_f1.png",
             "objects/masterworkChest/masterworkchest_full_open_anim_f2.png",
             "objects/masterworkChest/masterworkchest_empty_open_anim_f2.png");
+    private boolean lockpickingFailure = false;
+    private boolean isOpened = false;
 
 
     /**
@@ -40,7 +44,7 @@ public class MasterworkChest extends Entity {
         new PositionComponent(this, position);
         InventoryComponent ic = new InventoryComponent(this, itemData.size());
         itemData.forEach(ic::addItem);
-        new InteractionComponent(this, defaultInteractionRadius, true, this::dropItems);
+        new InteractionComponent(this, defaultInteractionRadius, true, this::interaction);
         AnimationComponent ac =
             new AnimationComponent(
                 this,
@@ -67,52 +71,81 @@ public class MasterworkChest extends Entity {
             Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint());
     }
 
-    private void dropItems(Entity entity) {
+    private void interaction(Entity entity) {
+        if (isOpened) return;
         Hero hero = (Hero) Game.getHero().get();
-        System.out.println(hero.canOpenChest);
         if (hero.canOpenChest) {
-            InventoryComponent inventoryComponent =
-                entity.getComponent(InventoryComponent.class)
-                    .map(InventoryComponent.class::cast)
-                    .orElseThrow(
-                        () ->
-                            createMissingComponentException(
-                                InventoryComponent.class.getName(), entity));
-            PositionComponent positionComponent =
-                entity.getComponent(PositionComponent.class)
-                    .map(PositionComponent.class::cast)
-                    .orElseThrow(
-                        () ->
-                            createMissingComponentException(
-                                PositionComponent.class.getName(), entity));
-            List<ItemData> itemData = inventoryComponent.getItems();
-            double count = itemData.size();
-
-            IntStream.range(0, itemData.size())
-                .forEach(
-                    index ->
-                        itemData.get(index)
-                            .triggerDrop(
-                                entity,
-                                calculateDropPosition(
-                                    positionComponent, index / count)));
-            entity.getComponent(AnimationComponent.class)
-                .map(AnimationComponent.class::cast)
-                .ifPresent(x -> x.setCurrentAnimation(x.getIdleRight()));
-            Entity entity1 = new Entity();
-
-            hero.canOpenChest = false;
-            ItemData itemData2 = hero.getComponent(InventoryComponent.class)
-                .map(InventoryComponent.class::cast)
-                .get().getItems().stream().filter(itemData1 -> itemData1.getItemName()
-                    .equals(ItemConfig.KEY_ITEM_NAME.get())).findFirst().get();
-
-            hero.getComponent(InventoryComponent.class).map(InventoryComponent.class::cast)
-                .get().removeItem(itemData2);
-
+            dropItems(this);
+            lockpickingFailure = true;
         }
+        else if (!lockpickingFailure) {
+            Game.lockpickingGame.startLockpickingGame(this);
+            lockpickingFailure = true;
+        } 
     }
 
+    /**
+     * Drops the items of the given entity to the ground
+     * The positions are randomly generated around the entity
+     * @param entity
+     */
+    public void dropItems(Entity entity) {
+        isOpened = true;
+        InventoryComponent inventoryComponent =
+            entity.getComponent(InventoryComponent.class)
+                .map(InventoryComponent.class::cast)
+                .orElseThrow(
+                    () ->
+                        createMissingComponentException(
+                            InventoryComponent.class.getName(), entity));
+        PositionComponent positionComponent =
+            entity.getComponent(PositionComponent.class)
+                .map(PositionComponent.class::cast)
+                .orElseThrow(
+                    () ->
+                        createMissingComponentException(
+                            PositionComponent.class.getName(), entity));
+        List<ItemData> itemData = inventoryComponent.getItems();
+        double count = itemData.size();
+
+        IntStream.range(0, itemData.size())
+            .forEach(
+                index ->
+                    itemData.get(index)
+                        .triggerDrop(
+                            entity,
+                            calculateDropPosition(
+                                positionComponent, index / count)));
+        entity.getComponent(AnimationComponent.class)
+            .map(AnimationComponent.class::cast)
+            .ifPresent(x -> x.setCurrentAnimation(x.getIdleRight()));
+
+        // If the hero has a key, remove it from the inventory
+        Hero hero = (Hero) Game.getHero().get();
+        if (!hero.canOpenChest) return;
+
+        ItemData itemData2 = hero.getComponent(InventoryComponent.class)
+        .map(InventoryComponent.class::cast)
+        .get().getItems().stream().filter(itemData1 -> itemData1.getItemName()
+                .equals(ItemConfig.KEY_ITEM_NAME.get())).findFirst().get();
+                
+        hero.getComponent(InventoryComponent.class).map(InventoryComponent.class::cast)
+        .get().removeItem(itemData2);
+
+        if (entityHasKey(hero)) hero.canOpenChest = true;
+        else hero.canOpenChest = false;
+    }
+
+    private boolean entityHasKey(Entity entity) {
+        // Check for inventory component
+        if (entity.getComponent(InventoryComponent.class).isEmpty()) return false;
+        InventoryComponent inventoryComponent =
+            entity.getComponent(InventoryComponent.class).map(InventoryComponent.class::cast).get();
+        // Check for key in inventory
+        if (inventoryComponent.getItems().stream().filter(itemData -> itemData.getItemName()
+                .equals(ItemConfig.KEY_ITEM_NAME.get())).findFirst().isEmpty()) return false;
+        return true;
+    }
 
     /**
      * small Helper to determine the Position of the dropped item simple circle drop

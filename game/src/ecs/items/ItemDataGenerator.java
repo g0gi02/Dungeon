@@ -7,7 +7,7 @@ import configuration.ItemConfig;
 import ecs.entities.BombItem;
 import ecs.entities.HealthPotion;
 import ecs.entities.SwordItem;
-
+import ecs.entities.KeyItem;
 
 /** Generator which creates a random ItemData based on the Templates prepared. */
 public class ItemDataGenerator {
@@ -25,7 +25,9 @@ public class ItemDataGenerator {
                     SwordItem.getItemConfigData());
     private List<ItemData> specialTemplates =
             List.of(
-                    SwordItem.getItemConfigData());
+                    SwordItem.getItemConfigData(),
+
+                    KeyItem.getItemConfigData());
 
                             
     private Random rand = new Random();

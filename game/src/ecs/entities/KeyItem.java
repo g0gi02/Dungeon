@@ -19,6 +19,9 @@ public class KeyItem extends Item implements IOnUse, IOnCollect, IOnDrop {
     private transient Logger KeyItemLogger;
     private ItemComponent itemComponent;
 
+    /**
+     * creates a new KeyItem
+     */
     public KeyItem() {
         super();
         setupItemComponent();
@@ -28,6 +31,11 @@ public class KeyItem extends Item implements IOnUse, IOnCollect, IOnDrop {
         KeyItemLogger.info("KeyItem created");
     }
 
+    /**
+     * creates a new KeyItem with a given position and itemData
+     * @param itemData
+     * @param point
+     */
     public KeyItem(ItemData itemData, Point point) {
         super();
         setupLogger();
@@ -137,6 +145,7 @@ public class KeyItem extends Item implements IOnUse, IOnCollect, IOnDrop {
             .map(InventoryComponent.class::cast)
             .get()
             .removeItem(which);
+        if(user instanceof Hero)
         ((Hero) user).canOpenChest = false;
     }
 
@@ -152,7 +161,33 @@ public class KeyItem extends Item implements IOnUse, IOnCollect, IOnDrop {
 
     }
 
+    /**
+     * This methode is used to get the item data
+     * @return the item data
+     */
+    public ItemData getItemData() {
+        return itemComponent.getItemData();
+    }
 
+    /**
+     * This methode is used to get the item config data
+     * @return the item config data
+     */
+    public static ItemData getItemConfigData() {
+        return new KeyItem(1).getItemData();
+    }
+
+    /**
+     * This methode is used to get the item data
+     * @return the item data
+     */
+    public KeyItem(int i) {
+        setupItemComponent();
+    }
+
+    /**
+     * This method sets up the logger
+     */
     public void setupLogger() {
         KeyItemLogger = Logger.getLogger("SwordItem");
     }

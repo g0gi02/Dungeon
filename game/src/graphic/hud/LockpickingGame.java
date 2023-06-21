@@ -17,6 +17,9 @@ import starter.Game;
 import tools.Constants;
 import tools.Point;
 import java.util.logging.Logger;
+import ecs.entities.IChest;
+import ecs.entities.MasterworkChest;
+import ecs.entities.Entity;
 
 /** A mini-game in which a progress bar is filled over time, requires a timed player input. */
 public class LockpickingGame<T extends Actor> extends ScreenController<T> {
@@ -30,7 +33,7 @@ public class LockpickingGame<T extends Actor> extends ScreenController<T> {
     private boolean isStarted;
     private static final String PATH_TO_BACKGROUND_TEXTURE ="minigames/lockpicking/background.png";
     private static final String PATH_TO_KNOB_TEXTURE ="minigames/lockpicking/knob.png";
-    private Chest associatedChest;
+    private MasterworkChest associatedChest;
 
     /** Creates a new LockpickingGame with a new Spritebatch */
     public LockpickingGame() {
@@ -77,7 +80,7 @@ public class LockpickingGame<T extends Actor> extends ScreenController<T> {
      *
      * @param chest chest which will be unlocked, can be null
      */
-    public void startLockpickingGame(Chest chest) {
+    public void startLockpickingGame(MasterworkChest chest) {
         // reset to starting values
         isActive = true;
         isStarted = false;
@@ -143,9 +146,7 @@ public class LockpickingGame<T extends Actor> extends ScreenController<T> {
                 } else {
                     logger.info("lockpicking successful");
                     if (associatedChest != null) {
-                        associatedChest.getComponent(InteractionComponent.class)
-                            .map(InteractionComponent.class::cast)
-                            .ifPresent(InteractionComponent::triggerInteraction);
+                        associatedChest.dropItems((Entity) associatedChest);
                     }
                     endLockpickingGame();
                 }
