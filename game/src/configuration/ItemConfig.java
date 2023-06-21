@@ -32,7 +32,7 @@ public class ItemConfig {
                     new String[] {"healthPotionSmallDescription"},
                     new ConfigStringValue("A small Health Potion"));
 
-    public static final ConfigKey<String> Health_POTION_SMALL_NAME = 
+    public static final ConfigKey<String> Health_POTION_SMALL_NAME =
             new ConfigKey<>(
                     new String[] {"healthPotionSmallName"},
                     new ConfigStringValue("Health Potion Small"));
@@ -42,7 +42,7 @@ public class ItemConfig {
                     new String[] {"healthPotionSmallType"},
                     new ConfigEnumValue<>(ItemType.Active));
 
-    public static final ConfigKey<String> HEALTH_POTION_SMALL_TEXTURE = 
+    public static final ConfigKey<String> HEALTH_POTION_SMALL_TEXTURE =
             new ConfigKey<>(
                     new String[] {"healthPotionSmallTexture"},
                     // new ConfigStringValue("objects/healthPotion/small/HealthPotionSmall.png"));
@@ -69,6 +69,31 @@ public class ItemConfig {
                     new String[] {"swordTexture"},
                     new ConfigStringValue("skills/melee/SwordSlash_0.png"));
 
+
+    /** Key Item */
+    public static final ConfigKey<String> KEY_ITEM_DESCRIPTION =
+        new ConfigKey<>(
+            new String[] {"keyDescription"},
+            new ConfigStringValue("A key to open the masterworkChest"));
+
+    public static final ConfigKey<String> KEY_ITEM_NAME =
+        new ConfigKey<>(
+            new String[] {"keyName"},
+            new ConfigStringValue("Key"));
+
+    public static final ConfigKey<ItemType> KEY_ITEM_TYPE =
+        new ConfigKey<>(
+            new String[] {"keyType"},
+            new ConfigEnumValue<>(ItemType.Passive));
+
+    public static final ConfigKey<String> KEY_ITEM_TEXTURE =
+        new ConfigKey<>(
+            new String[] {"keyTexture"},
+            new ConfigStringValue("objects/key/silver_key.png"));
+
+
+
+
     /** Bomb Item */
     public static final ConfigKey<String> BOMB_ITEM_DESCRIPTION =
             new ConfigKey<>(
@@ -91,7 +116,7 @@ public class ItemConfig {
     public static final ConfigKey<String> BACKPACK_ITEM_DESCRIPTION =
             new ConfigKey<>(
                     new String[] {"backpackDescription"},
-                    new ConfigStringValue("A bagpack to store stuff")); 
+                    new ConfigStringValue("A bagpack to store stuff"));
     public static final ConfigKey<String> BACKPACK_ITEM_NAME =
             new ConfigKey<>(
                     new String[] {"backpackName"},
@@ -104,6 +129,6 @@ public class ItemConfig {
             new ConfigKey<>(
                     new String[] {"backpackTexture"},
                     new ConfigStringValue("objects/Backpack/Backpack.png"));
-        
+
 
 }

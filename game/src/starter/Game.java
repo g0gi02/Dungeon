@@ -330,13 +330,16 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             //createQuest();
 
             Mimic_Chest_Trap.createNewMimicChest();
+            MasterworkChest.createNewMasterworkChest();
             SlowTrap.createSlowTrap();
             Imp.createNewImp();
             Slime.createNewSlime();
             Chort.createNewChort();
-            //If the player has a sword in the inventory, it wont be added again
+            //Chest.createNewChest();
+            //If the player has a sword or Key in the inventory, it wont be added again
             InventoryComponent ic = (InventoryComponent) getHero().get().getComponent(InventoryComponent.class).get();
             if(!ic.hasItemOfType("Sword")) addEntity(new SwordItem());
+            if(!ic.hasItemOfType("Key")) addEntity(new KeyItem());
             addEntity(new HealthPotion());
             addEntity(new BombItem());
             addEntity(new BackpackItem());

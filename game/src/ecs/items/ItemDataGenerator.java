@@ -14,8 +14,8 @@ public class ItemDataGenerator {
                             ItemType.Basic,
                             new Animation(missingTexture, 1),
                             new Animation(missingTexture, 1),
-                            "Buch",
-                            "Ein sehr lehrreiches Buch."),
+                            "keyDescription",
+                            "A key to open the masterworkChest"),
                     new ItemData(
                             ItemType.Basic,
                             new Animation(missingTexture, 1),
