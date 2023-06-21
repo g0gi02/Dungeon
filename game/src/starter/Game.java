@@ -25,9 +25,12 @@ import ecs.entities.*;
 import ecs.entities.Imp;
 import ecs.items.ItemData;
 import ecs.systems.*;
+import ecs.entities.Chest;
+import ecs.entities.MimicMonster;
 
 import graphic.DungeonCamera;
 import graphic.Painter;
+import graphic.hud.LockpickingGame;
 import graphic.hud.QuestMenus.ActiveQuestMenu;
 import graphic.hud.GameOverMenu;
 import graphic.hud.PauseMenu;
@@ -115,14 +118,13 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     public static QuestMenu<Actor> questMenu;
     public static ActiveQuestMenu<Actor> activeQuestMenu;
+    public static LockpickingGame<Actor> lockpickingGame;
 
     private static boolean hasOngoingQuest = false;
     private static Entity hero;
     private Logger gameLogger;
     public Questmaster questmaster;
-
     private boolean hasShownQuestMenuThisLevel = false;
-
 
     public static void main(String[] args) {
         // start the game
@@ -189,10 +191,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameOverMenu = new GameOverMenu<>();
         questMenu = new QuestMenu<>();
         activeQuestMenu = new ActiveQuestMenu<>();
+        lockpickingGame = new LockpickingGame<>();
         controller.add(activeQuestMenu);
         controller.add(pauseMenu);
         controller.add(gameOverMenu);
         controller.add(questMenu);
+        controller.add(lockpickingGame);
         hero = new Hero();
 
         //manageQuestMenus();
@@ -216,6 +220,11 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) saveGame("game/saves/save.txt");
         if (Gdx.input.isKeyJustPressed(Input.Keys.F2)) loadGame("game/saves/save.txt");
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.H)) MimicMonster.createNewMimicMonster();
+        // temp
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F3)){
+            lockpickingGame.startLockpickingGame(null);
+        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
             Logger logger = Logger.getLogger("Health");
             Game.getHero().stream()
@@ -329,17 +338,20 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             questmaster = Questmaster.createNewQuestmaster();
             //createQuest();
 
-            Mimic_Chest_Trap.createNewMimicChest();
+            MasterworkChest.createNewMasterworkChest();
             SlowTrap.createSlowTrap();
             Imp.createNewImp();
             Slime.createNewSlime();
             Chort.createNewChort();
-            //If the player has a sword in the inventory, it wont be added again
+            //Chest.createNewChest();
+            //If the player has a sword or Key in the inventory, it wont be added again
             InventoryComponent ic = (InventoryComponent) getHero().get().getComponent(InventoryComponent.class).get();
             if(!ic.hasItemOfType("Sword")) addEntity(new SwordItem());
+            if(!ic.hasItemOfType("Key")) addEntity(new KeyItem());
             addEntity(new HealthPotion());
             addEntity(new BombItem());
             addEntity(new BackpackItem());
+            MimicMonster.createNewMimicMonster();
         }
 
         entities.clear();
@@ -482,6 +494,18 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     public static void setHero(Entity hero) {
         Game.hero = hero;
+    }
+
+    /**
+     * @return true if the game is paused, otherwise false
+     */
+    public static boolean isPaused() {
+        return paused;
+    }
+
+    /** changes the boolean "paused" in the game */
+    public static void togglePaused() {
+        paused = !paused;
     }
 
     public void setSpriteBatch(SpriteBatch batch) {

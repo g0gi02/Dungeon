@@ -129,6 +129,7 @@ public class SwordItem extends Item implements IOnUse, IOnCollect, IOnDrop {
                 .map(InventoryComponent.class::cast)
                 .get()
                 .removeItem(which);
+        if(user instanceof Hero)
         ((Hero) user).lockMeleeSkill();
     }
 
@@ -147,5 +148,17 @@ public class SwordItem extends Item implements IOnUse, IOnCollect, IOnDrop {
     @Override
     public void setupLogger() {
         SwordItemLogger = Logger.getLogger("SwordItem");
+    }
+
+    public ItemData getItemData() {
+        return itemComponent.getItemData();
+    }
+
+    public static ItemData getItemConfigData() {
+        return new SwordItem(1).getItemData();
+    }
+
+    public SwordItem(int i) {
+        setupItemComponent();
     }
 }
